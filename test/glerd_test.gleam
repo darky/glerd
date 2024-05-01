@@ -17,7 +17,7 @@ pub type NestedPayload {
 }
 
 pub type WithResultPayload {
-  WithResultPayload(res: Result(Int, Nil))
+  WithResultPayload(res: Result(Int, String))
 }
 
 pub fn main() {
@@ -130,6 +130,30 @@ pub fn record_to_dict_with_result_test() {
       #(
         "res",
         Ok(1)
+          |> dynamic.from,
+      ),
+      #(
+        "__record_keys",
+        ["res"]
+          |> dynamic.from,
+      ),
+      #(
+        "__record_name",
+        "WithResultPayload"
+          |> dynamic.from,
+      ),
+    ]),
+  )
+}
+
+pub fn record_to_dict_with_result_error_test() {
+  WithResultPayload(Error("test"))
+  |> glerd.record_to_dict
+  |> should.equal(
+    dict.from_list([
+      #(
+        "res",
+        Error("test")
           |> dynamic.from,
       ),
       #(
