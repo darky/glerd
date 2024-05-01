@@ -26,13 +26,23 @@ pub fn record_to_dict_simple_test() {
   |> should.equal(
     dict.from_list([
       #(
-        "name",
-        "test"
+        "__record_keys",
+        #("name", "num")
           |> dynamic.from,
       ),
       #(
         "num",
         5
+          |> dynamic.from,
+      ),
+      #(
+        "name",
+        "test"
+          |> dynamic.from,
+      ),
+      #(
+        "__record_name",
+        "SimplePayload"
           |> dynamic.from,
       ),
     ]),
@@ -42,7 +52,25 @@ pub fn record_to_dict_simple_test() {
 pub fn record_to_dict_with_list_test() {
   WithListPayload([1, 2, 3])
   |> glerd.record_to_dict
-  |> should.equal(dict.from_list([#("list", [1, 2, 3])]))
+  |> should.equal(
+    dict.from_list([
+      #(
+        "__record_keys",
+        #("list")
+          |> dynamic.from,
+      ),
+      #(
+        "__record_name",
+        "WithListPayload"
+          |> dynamic.from,
+      ),
+      #(
+        "list",
+        [1, 2, 3]
+          |> dynamic.from,
+      ),
+    ]),
+  )
 }
 
 pub fn record_to_dict_with_nested_test() {
@@ -51,11 +79,16 @@ pub fn record_to_dict_with_nested_test() {
   |> should.equal(
     dict.from_list([
       #(
+        "__record_keys",
+        #("nested")
+          |> dynamic.from,
+      ),
+      #(
         "nested",
         dict.from_list([
           #(
-            "name",
-            "test"
+            "__record_keys",
+            #("name", "num")
               |> dynamic.from,
           ),
           #(
@@ -63,7 +96,23 @@ pub fn record_to_dict_with_nested_test() {
             5
               |> dynamic.from,
           ),
-        ]),
+          #(
+            "name",
+            "test"
+              |> dynamic.from,
+          ),
+          #(
+            "__record_name",
+            "SimplePayload"
+              |> dynamic.from,
+          ),
+        ])
+          |> dynamic.from,
+      ),
+      #(
+        "__record_name",
+        "NestedPayload"
+          |> dynamic.from,
       ),
     ]),
   )
