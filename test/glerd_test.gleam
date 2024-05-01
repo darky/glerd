@@ -16,6 +16,10 @@ pub type NestedPayload {
   NestedPayload(nested: SimplePayload)
 }
 
+pub type WithResultPayload {
+  WithResultPayload(res: Result(Int, Nil))
+}
+
 pub fn main() {
   gleeunit.main()
 }
@@ -112,6 +116,30 @@ pub fn record_to_dict_with_nested_test() {
       #(
         "__record_name",
         "NestedPayload"
+          |> dynamic.from,
+      ),
+    ]),
+  )
+}
+
+pub fn record_to_dict_with_result_test() {
+  WithResultPayload(Ok(1))
+  |> glerd.record_to_dict
+  |> should.equal(
+    dict.from_list([
+      #(
+        "res",
+        Ok(1)
+          |> dynamic.from,
+      ),
+      #(
+        "__record_keys",
+        #("res")
+          |> dynamic.from,
+      ),
+      #(
+        "__record_name",
+        "WithResultPayload"
           |> dynamic.from,
       ),
     ]),
