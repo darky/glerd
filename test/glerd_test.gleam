@@ -31,7 +31,7 @@ pub fn record_to_dict_simple_test() {
     dict.from_list([
       #(
         "__record_keys",
-        #("name", "num")
+        ["name", "num"]
           |> dynamic.from,
       ),
       #(
@@ -60,7 +60,7 @@ pub fn record_to_dict_with_list_test() {
     dict.from_list([
       #(
         "__record_keys",
-        #("list")
+        ["list"]
           |> dynamic.from,
       ),
       #(
@@ -84,7 +84,7 @@ pub fn record_to_dict_with_nested_test() {
     dict.from_list([
       #(
         "__record_keys",
-        #("nested")
+        ["nested"]
           |> dynamic.from,
       ),
       #(
@@ -92,7 +92,7 @@ pub fn record_to_dict_with_nested_test() {
         dict.from_list([
           #(
             "__record_keys",
-            #("name", "num")
+            ["name", "num"]
               |> dynamic.from,
           ),
           #(
@@ -134,7 +134,7 @@ pub fn record_to_dict_with_result_test() {
       ),
       #(
         "__record_keys",
-        #("res")
+        ["res"]
           |> dynamic.from,
       ),
       #(
