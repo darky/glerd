@@ -50,7 +50,9 @@ pub fn main() {
             <> name
             <> "\", "
             <> case typ {
-              NamedType(type_name, ..) if type_name == "String" -> "IsString"
+              NamedType(type_name, ..) if type_name == "String" ->
+                "types.IsString"
+              NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
               _ -> "Unknown"
             }
             <> ")"
@@ -60,8 +62,7 @@ pub fn main() {
         <> "\""
         <> " -> "
         <> "["
-        <> record_description
-        |> string.join(",")
+        <> string.join(record_description, ",")
         <> "]"
       })
       |> iterator.from_list
@@ -69,11 +70,7 @@ pub fn main() {
     |> iterator.to_list
 
   { "// this file generated via \"gleam run -m glerd\"
-
-    pub type FieldType {
-      IsString
-      Unknown
-    }
+    import types
 
     pub fn get_record_info(name) {
       case name {" <> records_info

@@ -1,15 +1,13 @@
 // this file generated via "gleam run -m glerd"
-
-pub type FieldType {
-  IsString
-  Unknown
-}
+import types
 
 pub fn get_record_info(name) {
   case name {
     "IsString" -> []
+    "IsInt" -> []
     "Unknown" -> []
-    "TestString" -> [#("name", IsString)]
+    "TestString" -> [#("name", types.IsString)]
+    "TestInt" -> [#("age", types.IsInt)]
     _ -> panic as { "Record not found " <> name }
   }
 }
