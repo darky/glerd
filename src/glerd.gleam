@@ -53,6 +53,9 @@ pub fn main() {
               NamedType(type_name, ..) if type_name == "String" ->
                 "types.IsString"
               NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
+              NamedType(type_name, ..) if type_name == "Float" ->
+                "types.IsFloat"
+              NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
               _ -> "Unknown"
             }
             <> ")"
