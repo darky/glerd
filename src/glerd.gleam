@@ -47,7 +47,8 @@ pub fn main() {
         let record_description =
           list.map(fields, fn(field) {
             let Field(field_name, typ) = field
-            let assert Some(field_name) = option.or(field_name, Some("unknown"))
+            let assert Some(field_name) =
+              option.or(field_name, Some("__none__"))
             "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
           })
         let record_fields = string.join(record_description, ",")
