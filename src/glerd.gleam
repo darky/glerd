@@ -45,28 +45,11 @@ pub fn main() {
         let record_description =
           list.map(fields, fn(field) {
             let Field(name, typ) = field
-            let assert Some(name) = name
-            "#(\""
-            <> name
-            <> "\", "
-            <> case typ {
-              NamedType(type_name, ..) if type_name == "String" ->
-                "types.IsString"
-              NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
-              NamedType(type_name, ..) if type_name == "Float" ->
-                "types.IsFloat"
-              NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
-              _ -> "Unknown"
-            }
-            <> ")"
+            let assert Some(name) = option.or(name, Some("unknown"))
+            "#(\"" <> name <> "\", " <> field_type(typ) <> ")"
           })
-        "\""
-        <> record_name
-        <> "\""
-        <> " -> "
-        <> "["
-        <> string.join(record_description, ",")
-        <> "]"
+        let record_fields = string.join(record_description, ",")
+        "\"" <> record_name <> "\"" <> " -> " <> "[" <> record_fields <> "]"
       })
       |> iterator.from_list
     })
@@ -76,7 +59,18 @@ pub fn main() {
     import types
 
     pub fn get_record_info(name) {
-      case name {" <> records_info
-    |> string.join("\n") <> "_ -> panic as {\"Record not found \" <> name}}}" }
+      case name {" <> string.join(records_info, "\n") <> "_ -> panic as {\"Record not found \" <> name}}}" }
   |> simplifile.write("./src/glerd_gen.gleam", _)
+}
+
+fn field_type(typ) {
+  case typ {
+    NamedType(type_name, ..) if type_name == "String" -> "types.IsString"
+    NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
+    NamedType(type_name, ..) if type_name == "Float" -> "types.IsFloat"
+    NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
+    NamedType(type_name, _, [typ]) if type_name == "List" ->
+      "types.IsList(" <> field_type(typ) <> ")"
+    _ -> "types.Unknown"
+  }
 }

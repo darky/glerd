@@ -3,5 +3,6 @@ pub type FieldType {
   IsInt
   IsFloat
   IsBool
+  IsList(FieldType)
   Unknown
 }

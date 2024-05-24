@@ -4,4 +4,5 @@ pub type TestRecords {
   TestFloat(distance: Float)
   TestBool(is_exists: Bool)
   TestMultiple(name: String, age: Int)
+  TestList(names: List(String))
 }
