@@ -12,5 +12,6 @@ pub type FieldType {
   IsDict(FieldType, FieldType)
   IsOption(FieldType)
   IsResult(FieldType, FieldType)
+  IsRecord(String)
   Unknown
 }

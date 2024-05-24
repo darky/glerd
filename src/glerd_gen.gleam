@@ -8,46 +8,47 @@ pub fn get_record_info(record_name) {
     "IsInt" -> []
     "IsFloat" -> []
     "IsBool" -> []
-    "IsList" -> [#("unknown", glerd_types.Unknown)]
+    "IsList" -> [#("unknown", glerd_types.IsRecord("FieldType"))]
     "IsTuple2" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
     "IsTuple3" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
     "IsTuple4" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
     "IsTuple5" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
     "IsTuple6" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
     "IsDict" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
-    "IsOption" -> [#("unknown", glerd_types.Unknown)]
+    "IsOption" -> [#("unknown", glerd_types.IsRecord("FieldType"))]
     "IsResult" -> [
-      #("unknown", glerd_types.Unknown),
-      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.IsRecord("FieldType")),
+      #("unknown", glerd_types.IsRecord("FieldType")),
     ]
+    "IsRecord" -> [#("unknown", glerd_types.IsString)]
     "Unknown" -> []
     "TestString" -> [#("name", glerd_types.IsString)]
     "TestInt" -> [#("age", glerd_types.IsInt)]
@@ -120,6 +121,8 @@ pub fn get_record_info(record_name) {
         glerd_types.IsResult(glerd_types.IsInt, glerd_types.IsString),
       ),
     ]
+    "TestRecord" -> [#("nested", glerd_types.IsRecord("NestedRecord"))]
+    "NestedRecord" -> [#("name", glerd_types.IsString)]
     _ -> panic as { "Record not found " <> record_name }
   }
 }

@@ -138,6 +138,8 @@ fn field_type(typ) {
       <> ","
       <> field_type(typ6)
       <> ")"
+    NamedType(record_name, ..) ->
+      "glerd_types.IsRecord(\"" <> record_name <> "\")"
     _ -> "glerd_types.Unknown"
   }
 }
