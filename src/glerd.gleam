@@ -57,7 +57,7 @@ pub fn main() {
 
   { "// this file generated via \"gleam run -m glerd\"
 
-    import types
+    import glerd_types
 
     pub fn get_record_info(record_name) {
       case record_name {" <> string.join(records_info, "\n") <> "_ -> panic as {\"Record not found \" <> record_name}}}" }
@@ -66,12 +66,12 @@ pub fn main() {
 
 fn field_type(typ) {
   case typ {
-    NamedType(type_name, ..) if type_name == "String" -> "types.IsString"
-    NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
-    NamedType(type_name, ..) if type_name == "Float" -> "types.IsFloat"
-    NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
+    NamedType(type_name, ..) if type_name == "String" -> "glerd_types.IsString"
+    NamedType(type_name, ..) if type_name == "Int" -> "glerd_types.IsInt"
+    NamedType(type_name, ..) if type_name == "Float" -> "glerd_types.IsFloat"
+    NamedType(type_name, ..) if type_name == "Bool" -> "glerd_types.IsBool"
     NamedType(type_name, _, [typ]) if type_name == "List" ->
-      "types.IsList(" <> field_type(typ) <> ")"
-    _ -> "types.Unknown"
+      "glerd_types.IsList(" <> field_type(typ) <> ")"
+    _ -> "glerd_types.Unknown"
   }
 }

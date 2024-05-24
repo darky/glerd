@@ -1,5 +1,6 @@
 // this file generated via "gleam run -m glerd"
-import types
+
+import glerd_types
 
 pub fn get_record_info(record_name) {
   case record_name {
@@ -7,14 +8,17 @@ pub fn get_record_info(record_name) {
     "IsInt" -> []
     "IsFloat" -> []
     "IsBool" -> []
-    "IsList" -> [#("unknown", types.Unknown)]
+    "IsList" -> [#("unknown", glerd_types.Unknown)]
     "Unknown" -> []
-    "TestString" -> [#("name", types.IsString)]
-    "TestInt" -> [#("age", types.IsInt)]
-    "TestFloat" -> [#("distance", types.IsFloat)]
-    "TestBool" -> [#("is_exists", types.IsBool)]
-    "TestMultiple" -> [#("name", types.IsString), #("age", types.IsInt)]
-    "TestList" -> [#("names", types.IsList(types.IsString))]
+    "TestString" -> [#("name", glerd_types.IsString)]
+    "TestInt" -> [#("age", glerd_types.IsInt)]
+    "TestFloat" -> [#("distance", glerd_types.IsFloat)]
+    "TestBool" -> [#("is_exists", glerd_types.IsBool)]
+    "TestMultiple" -> [
+      #("name", glerd_types.IsString),
+      #("age", glerd_types.IsInt),
+    ]
+    "TestList" -> [#("names", glerd_types.IsList(glerd_types.IsString))]
     _ -> panic as { "Record not found " <> record_name }
   }
 }
