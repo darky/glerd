@@ -80,6 +80,14 @@ fn field_type(typ) {
       <> ","
       <> field_type(val_type)
       <> ")"
+    NamedType(type_name, _, [typ]) if type_name == "Option" ->
+      "glerd_types.IsOption(" <> field_type(typ) <> ")"
+    NamedType(type_name, _, [typ1, typ2]) if type_name == "Result" ->
+      "glerd_types.IsResult("
+      <> field_type(typ1)
+      <> ","
+      <> field_type(typ2)
+      <> ")"
     TupleType([typ1, typ2]) ->
       "glerd_types.IsTuple2("
       <> field_type(typ1)

@@ -10,5 +10,7 @@ pub type FieldType {
   IsTuple5(FieldType, FieldType, FieldType, FieldType, FieldType)
   IsTuple6(FieldType, FieldType, FieldType, FieldType, FieldType, FieldType)
   IsDict(FieldType, FieldType)
+  IsOption(FieldType)
+  IsResult(FieldType, FieldType)
   Unknown
 }

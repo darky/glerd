@@ -1,4 +1,5 @@
 import gleam/dict.{type Dict}
+import gleam/option.{type Option}
 
 pub type TestRecords {
   TestString(name: String)
@@ -12,5 +13,7 @@ pub type TestRecords {
   TestTuple4(str_or_int: #(String, Int, String, Int))
   TestTuple5(str_or_int: #(String, Int, String, Int, String))
   TestTuple6(str_or_int: #(String, Int, String, Int, String, Int))
-  TestDict(some_dict: Dict(String, Int))
+  TestDict(dict: Dict(String, Int))
+  TestOption(some_int: Option(Int))
+  TestResult(result_field: Result(Int, String))
 }
