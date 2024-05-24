@@ -1,5 +1,7 @@
 import fswalk.{Entry, Stat}
-import glance.{CustomType, Definition, Field, Module, NamedType, Variant}
+import glance.{
+  CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
+}
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
@@ -44,9 +46,9 @@ pub fn main() {
         let Variant(record_name, fields) = variant
         let record_description =
           list.map(fields, fn(field) {
-            let Field(name, typ) = field
-            let assert Some(name) = option.or(name, Some("unknown"))
-            "#(\"" <> name <> "\", " <> field_type(typ) <> ")"
+            let Field(field_name, typ) = field
+            let assert Some(field_name) = option.or(field_name, Some("unknown"))
+            "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
           })
         let record_fields = string.join(record_description, ",")
         "\"" <> record_name <> "\"" <> " -> " <> "[" <> record_fields <> "]"
@@ -72,6 +74,56 @@ fn field_type(typ) {
     NamedType(type_name, ..) if type_name == "Bool" -> "glerd_types.IsBool"
     NamedType(type_name, _, [typ]) if type_name == "List" ->
       "glerd_types.IsList(" <> field_type(typ) <> ")"
+    TupleType([typ1, typ2]) ->
+      "glerd_types.IsTuple2("
+      <> field_type(typ1)
+      <> ","
+      <> field_type(typ2)
+      <> ")"
+    TupleType([typ1, typ2, typ3]) ->
+      "glerd_types.IsTuple3("
+      <> field_type(typ1)
+      <> ","
+      <> field_type(typ2)
+      <> ","
+      <> field_type(typ3)
+      <> ")"
+    TupleType([typ1, typ2, typ3, typ4]) ->
+      "glerd_types.IsTuple4("
+      <> field_type(typ1)
+      <> ","
+      <> field_type(typ2)
+      <> ","
+      <> field_type(typ3)
+      <> ","
+      <> field_type(typ4)
+      <> ")"
+    TupleType([typ1, typ2, typ3, typ4, typ5]) ->
+      "glerd_types.IsTuple5("
+      <> field_type(typ1)
+      <> ","
+      <> field_type(typ2)
+      <> ","
+      <> field_type(typ3)
+      <> ","
+      <> field_type(typ4)
+      <> ","
+      <> field_type(typ5)
+      <> ")"
+    TupleType([typ1, typ2, typ3, typ4, typ5, typ6]) ->
+      "glerd_types.IsTuple6("
+      <> field_type(typ1)
+      <> ","
+      <> field_type(typ2)
+      <> ","
+      <> field_type(typ3)
+      <> ","
+      <> field_type(typ4)
+      <> ","
+      <> field_type(typ5)
+      <> ","
+      <> field_type(typ6)
+      <> ")"
     _ -> "glerd_types.Unknown"
   }
 }
