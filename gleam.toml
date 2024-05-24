@@ -14,9 +14,12 @@ version = "1.0.0"
 
 
 [dependencies]
+fswalk = ">= 3.0.1"
+glance = ">= 0.11.0"
 gleam_erlang = ">= 0.25.0"
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
 gluple = ">= 1.0.0"
+simplifile = ">= 1.7.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
