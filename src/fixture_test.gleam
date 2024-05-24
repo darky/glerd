@@ -1,3 +1,5 @@
+import gleam/dict.{type Dict}
+
 pub type TestRecords {
   TestString(name: String)
   TestInt(age: Int)
@@ -10,4 +12,5 @@ pub type TestRecords {
   TestTuple4(str_or_int: #(String, Int, String, Int))
   TestTuple5(str_or_int: #(String, Int, String, Int, String))
   TestTuple6(str_or_int: #(String, Int, String, Int, String, Int))
+  TestDict(some_dict: Dict(String, Int))
 }

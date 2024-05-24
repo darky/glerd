@@ -39,6 +39,10 @@ pub fn get_record_info(record_name) {
       #("unknown", glerd_types.Unknown),
       #("unknown", glerd_types.Unknown),
     ]
+    "IsDict" -> [
+      #("unknown", glerd_types.Unknown),
+      #("unknown", glerd_types.Unknown),
+    ]
     "Unknown" -> []
     "TestString" -> [#("name", glerd_types.IsString)]
     "TestInt" -> [#("age", glerd_types.IsInt)]
@@ -99,6 +103,12 @@ pub fn get_record_info(record_name) {
           glerd_types.IsString,
           glerd_types.IsInt,
         ),
+      ),
+    ]
+    "TestDict" -> [
+      #(
+        "some_dict",
+        glerd_types.IsDict(glerd_types.IsString, glerd_types.IsInt),
       ),
     ]
     _ -> panic as { "Record not found " <> record_name }

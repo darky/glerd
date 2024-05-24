@@ -74,6 +74,12 @@ fn field_type(typ) {
     NamedType(type_name, ..) if type_name == "Bool" -> "glerd_types.IsBool"
     NamedType(type_name, _, [typ]) if type_name == "List" ->
       "glerd_types.IsList(" <> field_type(typ) <> ")"
+    NamedType(type_name, _, [key_type, val_type]) if type_name == "Dict" ->
+      "glerd_types.IsDict("
+      <> field_type(key_type)
+      <> ","
+      <> field_type(val_type)
+      <> ")"
     TupleType([typ1, typ2]) ->
       "glerd_types.IsTuple2("
       <> field_type(typ1)
