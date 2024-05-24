@@ -56,10 +56,11 @@ pub fn main() {
     |> iterator.to_list
 
   { "// this file generated via \"gleam run -m glerd\"
+
     import types
 
-    pub fn get_record_info(name) {
-      case name {" <> string.join(records_info, "\n") <> "_ -> panic as {\"Record not found \" <> name}}}" }
+    pub fn get_record_info(record_name) {
+      case record_name {" <> string.join(records_info, "\n") <> "_ -> panic as {\"Record not found \" <> record_name}}}" }
   |> simplifile.write("./src/glerd_gen.gleam", _)
 }
 

@@ -1,8 +1,8 @@
 // this file generated via "gleam run -m glerd"
 import types
 
-pub fn get_record_info(name) {
-  case name {
+pub fn get_record_info(record_name) {
+  case record_name {
     "IsString" -> []
     "IsInt" -> []
     "IsFloat" -> []
@@ -15,6 +15,6 @@ pub fn get_record_info(name) {
     "TestBool" -> [#("is_exists", types.IsBool)]
     "TestMultiple" -> [#("name", types.IsString), #("age", types.IsInt)]
     "TestList" -> [#("names", types.IsList(types.IsString))]
-    _ -> panic as { "Record not found " <> name }
+    _ -> panic as { "Record not found " <> record_name }
   }
 }
