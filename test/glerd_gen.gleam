@@ -3,51 +3,46 @@
 import glerd/types
 
 pub type RecordKey {
-  FixtureTestTestString
-  FixtureTestTestInt
-  FixtureTestTestFloat
-  FixtureTestTestBool
-  FixtureTestTestMultiple
-  FixtureTestTestList
-  FixtureTestTestTuple2
-  FixtureTestTestTuple3
-  FixtureTestTestTuple4
-  FixtureTestTestTuple5
-  FixtureTestTestTuple6
-  FixtureTestTestDict
-  FixtureTestTestOption
-  FixtureTestTestResult
-  FixtureTestTestRecord
-  FixtureTestNestedRecord
+  TestString
+  TestInt
+  TestFloat
+  TestBool
+  TestMultiple
+  TestList
+  TestTuple2
+  TestTuple3
+  TestTuple4
+  TestTuple5
+  TestTuple6
+  TestDict
+  TestOption
+  TestResult
+  TestRecord
+  NestedRecord
 }
 
 pub fn get_record_info(record_key) {
   case record_key {
-    FixtureTestTestString -> [#("name", types.IsString)]
-    FixtureTestTestInt -> [#("age", types.IsInt)]
-    FixtureTestTestFloat -> [#("distance", types.IsFloat)]
-    FixtureTestTestBool -> [#("is_exists", types.IsBool)]
-    FixtureTestTestMultiple -> [
-      #("name", types.IsString),
-      #("age", types.IsInt),
-    ]
-    FixtureTestTestList -> [#("names", types.IsList(types.IsString))]
-    FixtureTestTestTuple2 -> [
-      #("str_or_int", types.IsTuple2(types.IsString, types.IsInt)),
-    ]
-    FixtureTestTestTuple3 -> [
+    TestString -> [#("name", types.IsString)]
+    TestInt -> [#("age", types.IsInt)]
+    TestFloat -> [#("distance", types.IsFloat)]
+    TestBool -> [#("is_exists", types.IsBool)]
+    TestMultiple -> [#("name", types.IsString), #("age", types.IsInt)]
+    TestList -> [#("names", types.IsList(types.IsString))]
+    TestTuple2 -> [#("str_or_int", types.IsTuple2(types.IsString, types.IsInt))]
+    TestTuple3 -> [
       #(
         "str_or_int",
         types.IsTuple3(types.IsString, types.IsInt, types.IsString),
       ),
     ]
-    FixtureTestTestTuple4 -> [
+    TestTuple4 -> [
       #(
         "str_or_int",
         types.IsTuple4(types.IsString, types.IsInt, types.IsString, types.IsInt),
       ),
     ]
-    FixtureTestTestTuple5 -> [
+    TestTuple5 -> [
       #(
         "str_or_int",
         types.IsTuple5(
@@ -59,7 +54,7 @@ pub fn get_record_info(record_key) {
         ),
       ),
     ]
-    FixtureTestTestTuple6 -> [
+    TestTuple6 -> [
       #(
         "str_or_int",
         types.IsTuple6(
@@ -72,14 +67,12 @@ pub fn get_record_info(record_key) {
         ),
       ),
     ]
-    FixtureTestTestDict -> [
-      #("dict", types.IsDict(types.IsString, types.IsInt)),
-    ]
-    FixtureTestTestOption -> [#("some_int", types.IsOption(types.IsInt))]
-    FixtureTestTestResult -> [
+    TestDict -> [#("dict", types.IsDict(types.IsString, types.IsInt))]
+    TestOption -> [#("some_int", types.IsOption(types.IsInt))]
+    TestResult -> [
       #("result_field", types.IsResult(types.IsInt, types.IsString)),
     ]
-    FixtureTestTestRecord -> [#("nested", types.IsRecord("NestedRecord"))]
-    FixtureTestNestedRecord -> [#("name", types.IsString)]
+    TestRecord -> [#("nested", types.IsRecord(NestedRecord))]
+    NestedRecord -> [#("name", types.IsString)]
   }
 }

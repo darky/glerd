@@ -1,4 +1,3 @@
-import act
 import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
@@ -7,7 +6,6 @@ import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
 import gleam/string
-import justin
 import simplifile
 
 pub fn main() {
@@ -28,25 +26,21 @@ pub fn do_main(root) {
     })
     |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      fn(_ctx) { #(path_to_module_name(root, path), path) }
+      path
     })
-    |> iterator.map(fn(action) {
-      use path <- act.do(action)
+    |> iterator.map(fn(path) {
       let assert Ok(content) = simplifile.read(path)
-      act.return(content)
+      content
     })
-    |> iterator.map(fn(action) {
-      use content <- act.do(action)
+    |> iterator.map(fn(content) {
       let assert Ok(module) = glance.module(content)
-      act.return(module)
+      module
     })
-    |> iterator.map(fn(action) {
-      use module <- act.do(action)
+    |> iterator.map(fn(module) {
       let Module(_, custom_types_definitions, ..) = module
-      act.return(custom_types_definitions)
+      custom_types_definitions
     })
-    |> iterator.flat_map(fn(action) {
-      let #(module_name, custom_type_definitions) = action("")
+    |> iterator.flat_map(fn(custom_type_definitions) {
       {
         use custom_type_definition <- list.flat_map(custom_type_definitions)
         let Definition(_, custom_type) = custom_type_definition
@@ -61,7 +55,7 @@ pub fn do_main(root) {
             "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
           })
         let record_fields = string.join(record_description, ",")
-        module_name <> record_name <> " -> " <> "[" <> record_fields <> "]"
+        record_name <> " -> " <> "[" <> record_fields <> "]"
       }
       |> iterator.from_list
     })
@@ -155,15 +149,7 @@ fn field_type(typ) {
       <> ","
       <> field_type(typ6)
       <> ")"
-    NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
+    NamedType(record_name, ..) -> "types.IsRecord(" <> record_name <> ")"
     _ -> "types.Unknown"
   }
-}
-
-fn path_to_module_name(dir, path) {
-  path
-  |> string.replace(dir <> "/", "")
-  |> string.replace(".gleam", "")
-  |> string.replace("/", "_")
-  |> justin.pascal_case
 }
