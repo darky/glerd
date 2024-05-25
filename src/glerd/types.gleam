@@ -13,5 +13,4 @@ pub type FieldType {
   IsOption(FieldType)
   IsResult(FieldType, FieldType)
   IsRecord(String)
-  Unknown
 }
