@@ -15,6 +15,7 @@ gleam run -m glerd && gleam format ./src/glerd_gen.gleam
 ## Development
 
 ```sh
+rm ./test/glerd_gen.gleam
 gleam test
 gleam format ./test/glerd_gen.gleam
 # then commit generated file
