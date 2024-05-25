@@ -1,3 +1,4 @@
+import act
 import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
@@ -6,6 +7,7 @@ import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
 import gleam/string
+import justin
 import simplifile
 
 pub fn main() {
@@ -22,27 +24,30 @@ pub fn main() {
     })
     |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      path
+      fn(_ctx) { #(path_to_module_name("src", path), path) }
     })
-    |> iterator.map(fn(path) {
+    |> iterator.map(fn(action) {
+      use path <- act.do(action)
       let assert Ok(content) = simplifile.read(path)
-      content
+      act.return(content)
     })
-    |> iterator.map(fn(content) {
+    |> iterator.map(fn(action) {
+      use content <- act.do(action)
       let assert Ok(module) = glance.module(content)
-      module
+      act.return(module)
     })
-    |> iterator.flat_map(fn(module) {
+    |> iterator.map(fn(action) {
+      use module <- act.do(action)
       let Module(_, custom_types_definitions, ..) = module
-      iterator.from_list(custom_types_definitions)
+      act.return(custom_types_definitions)
     })
-    |> iterator.map(fn(custom_type_definition) {
-      let Definition(_, custom_type) = custom_type_definition
-      custom_type
-    })
-    |> iterator.flat_map(fn(custom_type) {
-      let CustomType(_, _, _, _, variants) = custom_type
-      list.map(variants, fn(variant) {
+    |> iterator.flat_map(fn(action) {
+      let #(module_name, custom_type_definitions) = action("")
+      {
+        use custom_type_definition <- list.flat_map(custom_type_definitions)
+        let Definition(_, custom_type) = custom_type_definition
+        let CustomType(_, _, _, _, variants) = custom_type
+        use variant <- list.map(variants)
         let Variant(record_name, fields) = variant
         let record_description =
           list.map(fields, fn(field) {
@@ -52,8 +57,9 @@ pub fn main() {
             "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
           })
         let record_fields = string.join(record_description, ",")
+        let record_name = module_name <> record_name
         "\"" <> record_name <> "\"" <> " -> " <> "[" <> record_fields <> "]"
-      })
+      }
       |> iterator.from_list
     })
     |> iterator.to_list
@@ -144,4 +150,11 @@ fn field_type(typ) {
       "glerd_types.IsRecord(\"" <> record_name <> "\")"
     _ -> "glerd_types.Unknown"
   }
+}
+
+fn path_to_module_name(dir, path) {
+  path
+  |> string.replace(dir <> "/", "")
+  |> string.replace(".gleam", "")
+  |> justin.pascal_case
 }
