@@ -67,7 +67,7 @@ pub fn main() {
 
   { "// this file was generated via \"gleam run -m glerd\"
 
-    import glerd_types
+    import glerd/types
 
     pub fn get_record_info(record_name) {
       case record_name {" <> records_info <> "_ -> panic as {\"Record not found \" <> record_name}}}" }
@@ -76,34 +76,26 @@ pub fn main() {
 
 fn field_type(typ) {
   case typ {
-    NamedType(type_name, ..) if type_name == "String" -> "glerd_types.IsString"
-    NamedType(type_name, ..) if type_name == "Int" -> "glerd_types.IsInt"
-    NamedType(type_name, ..) if type_name == "Float" -> "glerd_types.IsFloat"
-    NamedType(type_name, ..) if type_name == "Bool" -> "glerd_types.IsBool"
+    NamedType(type_name, ..) if type_name == "String" -> "types.IsString"
+    NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
+    NamedType(type_name, ..) if type_name == "Float" -> "types.IsFloat"
+    NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
     NamedType(type_name, _, [typ]) if type_name == "List" ->
-      "glerd_types.IsList(" <> field_type(typ) <> ")"
+      "types.IsList(" <> field_type(typ) <> ")"
     NamedType(type_name, _, [key_type, val_type]) if type_name == "Dict" ->
-      "glerd_types.IsDict("
+      "types.IsDict("
       <> field_type(key_type)
       <> ","
       <> field_type(val_type)
       <> ")"
     NamedType(type_name, _, [typ]) if type_name == "Option" ->
-      "glerd_types.IsOption(" <> field_type(typ) <> ")"
+      "types.IsOption(" <> field_type(typ) <> ")"
     NamedType(type_name, _, [typ1, typ2]) if type_name == "Result" ->
-      "glerd_types.IsResult("
-      <> field_type(typ1)
-      <> ","
-      <> field_type(typ2)
-      <> ")"
+      "types.IsResult(" <> field_type(typ1) <> "," <> field_type(typ2) <> ")"
     TupleType([typ1, typ2]) ->
-      "glerd_types.IsTuple2("
-      <> field_type(typ1)
-      <> ","
-      <> field_type(typ2)
-      <> ")"
+      "types.IsTuple2(" <> field_type(typ1) <> "," <> field_type(typ2) <> ")"
     TupleType([typ1, typ2, typ3]) ->
-      "glerd_types.IsTuple3("
+      "types.IsTuple3("
       <> field_type(typ1)
       <> ","
       <> field_type(typ2)
@@ -111,7 +103,7 @@ fn field_type(typ) {
       <> field_type(typ3)
       <> ")"
     TupleType([typ1, typ2, typ3, typ4]) ->
-      "glerd_types.IsTuple4("
+      "types.IsTuple4("
       <> field_type(typ1)
       <> ","
       <> field_type(typ2)
@@ -121,7 +113,7 @@ fn field_type(typ) {
       <> field_type(typ4)
       <> ")"
     TupleType([typ1, typ2, typ3, typ4, typ5]) ->
-      "glerd_types.IsTuple5("
+      "types.IsTuple5("
       <> field_type(typ1)
       <> ","
       <> field_type(typ2)
@@ -133,7 +125,7 @@ fn field_type(typ) {
       <> field_type(typ5)
       <> ")"
     TupleType([typ1, typ2, typ3, typ4, typ5, typ6]) ->
-      "glerd_types.IsTuple6("
+      "types.IsTuple6("
       <> field_type(typ1)
       <> ","
       <> field_type(typ2)
@@ -146,9 +138,8 @@ fn field_type(typ) {
       <> ","
       <> field_type(typ6)
       <> ")"
-    NamedType(record_name, ..) ->
-      "glerd_types.IsRecord(\"" <> record_name <> "\")"
-    _ -> "glerd_types.Unknown"
+    NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
+    _ -> "types.Unknown"
   }
 }
 
@@ -156,5 +147,6 @@ fn path_to_module_name(dir, path) {
   path
   |> string.replace(dir <> "/", "")
   |> string.replace(".gleam", "")
+  |> string.replace("/", "_")
   |> justin.pascal_case
 }

@@ -1,134 +1,113 @@
 // this file was generated via "gleam run -m glerd"
 
-import glerd_types
+import glerd/types
 
 pub fn get_record_info(record_name) {
   case record_name {
-    "GlerdTypesIsString" -> []
-    "GlerdTypesIsInt" -> []
-    "GlerdTypesIsFloat" -> []
-    "GlerdTypesIsBool" -> []
-    "GlerdTypesIsList" -> [#("__none__", glerd_types.IsRecord("FieldType"))]
-    "GlerdTypesIsTuple2" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsTuple3" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsTuple4" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsTuple5" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsTuple6" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsDict" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsOption" -> [#("__none__", glerd_types.IsRecord("FieldType"))]
-    "GlerdTypesIsResult" -> [
-      #("__none__", glerd_types.IsRecord("FieldType")),
-      #("__none__", glerd_types.IsRecord("FieldType")),
-    ]
-    "GlerdTypesIsRecord" -> [#("__none__", glerd_types.IsString)]
-    "GlerdTypesUnknown" -> []
-    "FixtureTestTestString" -> [#("name", glerd_types.IsString)]
-    "FixtureTestTestInt" -> [#("age", glerd_types.IsInt)]
-    "FixtureTestTestFloat" -> [#("distance", glerd_types.IsFloat)]
-    "FixtureTestTestBool" -> [#("is_exists", glerd_types.IsBool)]
+    "FixtureTestTestString" -> [#("name", types.IsString)]
+    "FixtureTestTestInt" -> [#("age", types.IsInt)]
+    "FixtureTestTestFloat" -> [#("distance", types.IsFloat)]
+    "FixtureTestTestBool" -> [#("is_exists", types.IsBool)]
     "FixtureTestTestMultiple" -> [
-      #("name", glerd_types.IsString),
-      #("age", glerd_types.IsInt),
+      #("name", types.IsString),
+      #("age", types.IsInt),
     ]
-    "FixtureTestTestList" -> [
-      #("names", glerd_types.IsList(glerd_types.IsString)),
-    ]
+    "FixtureTestTestList" -> [#("names", types.IsList(types.IsString))]
     "FixtureTestTestTuple2" -> [
-      #(
-        "str_or_int",
-        glerd_types.IsTuple2(glerd_types.IsString, glerd_types.IsInt),
-      ),
+      #("str_or_int", types.IsTuple2(types.IsString, types.IsInt)),
     ]
     "FixtureTestTestTuple3" -> [
       #(
         "str_or_int",
-        glerd_types.IsTuple3(
-          glerd_types.IsString,
-          glerd_types.IsInt,
-          glerd_types.IsString,
-        ),
+        types.IsTuple3(types.IsString, types.IsInt, types.IsString),
       ),
     ]
     "FixtureTestTestTuple4" -> [
       #(
         "str_or_int",
-        glerd_types.IsTuple4(
-          glerd_types.IsString,
-          glerd_types.IsInt,
-          glerd_types.IsString,
-          glerd_types.IsInt,
-        ),
+        types.IsTuple4(types.IsString, types.IsInt, types.IsString, types.IsInt),
       ),
     ]
     "FixtureTestTestTuple5" -> [
       #(
         "str_or_int",
-        glerd_types.IsTuple5(
-          glerd_types.IsString,
-          glerd_types.IsInt,
-          glerd_types.IsString,
-          glerd_types.IsInt,
-          glerd_types.IsString,
+        types.IsTuple5(
+          types.IsString,
+          types.IsInt,
+          types.IsString,
+          types.IsInt,
+          types.IsString,
         ),
       ),
     ]
     "FixtureTestTestTuple6" -> [
       #(
         "str_or_int",
-        glerd_types.IsTuple6(
-          glerd_types.IsString,
-          glerd_types.IsInt,
-          glerd_types.IsString,
-          glerd_types.IsInt,
-          glerd_types.IsString,
-          glerd_types.IsInt,
+        types.IsTuple6(
+          types.IsString,
+          types.IsInt,
+          types.IsString,
+          types.IsInt,
+          types.IsString,
+          types.IsInt,
         ),
       ),
     ]
     "FixtureTestTestDict" -> [
-      #("dict", glerd_types.IsDict(glerd_types.IsString, glerd_types.IsInt)),
+      #("dict", types.IsDict(types.IsString, types.IsInt)),
     ]
-    "FixtureTestTestOption" -> [
-      #("some_int", glerd_types.IsOption(glerd_types.IsInt)),
-    ]
+    "FixtureTestTestOption" -> [#("some_int", types.IsOption(types.IsInt))]
     "FixtureTestTestResult" -> [
-      #(
-        "result_field",
-        glerd_types.IsResult(glerd_types.IsInt, glerd_types.IsString),
-      ),
+      #("result_field", types.IsResult(types.IsInt, types.IsString)),
     ]
-    "FixtureTestTestRecord" -> [
-      #("nested", glerd_types.IsRecord("NestedRecord")),
+    "FixtureTestTestRecord" -> [#("nested", types.IsRecord("NestedRecord"))]
+    "FixtureTestNestedRecord" -> [#("name", types.IsString)]
+    "GlerdTypesIsString" -> []
+    "GlerdTypesIsInt" -> []
+    "GlerdTypesIsFloat" -> []
+    "GlerdTypesIsBool" -> []
+    "GlerdTypesIsList" -> [#("__none__", types.IsRecord("FieldType"))]
+    "GlerdTypesIsTuple2" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
     ]
-    "FixtureTestNestedRecord" -> [#("name", glerd_types.IsString)]
+    "GlerdTypesIsTuple3" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+    ]
+    "GlerdTypesIsTuple4" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+    ]
+    "GlerdTypesIsTuple5" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+    ]
+    "GlerdTypesIsTuple6" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+    ]
+    "GlerdTypesIsDict" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+    ]
+    "GlerdTypesIsOption" -> [#("__none__", types.IsRecord("FieldType"))]
+    "GlerdTypesIsResult" -> [
+      #("__none__", types.IsRecord("FieldType")),
+      #("__none__", types.IsRecord("FieldType")),
+    ]
+    "GlerdTypesIsRecord" -> [#("__none__", types.IsString)]
+    "GlerdTypesUnknown" -> []
     _ -> panic as { "Record not found " <> record_name }
   }
 }
