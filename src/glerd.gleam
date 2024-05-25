@@ -63,16 +63,16 @@ pub fn main() {
     })
     |> iterator.to_list
 
-  let records_names =
-    list.map(records_info, fn(ri) {
+  let records_keys =
+    records_info
+    |> list.map(fn(ri) {
       let assert Ok(record_name) =
         ri
         |> string.split("->")
         |> list.first
       string.trim(record_name)
     })
-  let records_names = string.join(records_names, "\n")
-  let records_info = string.join(records_info, "\n")
+    |> string.join("\n")
 
   simplifile.write(
     "./src/glerd_gen.gleam",
@@ -80,10 +80,10 @@ pub fn main() {
 
     import glerd/types
 
-    pub type RecordKey {" <> records_names <> "}
+    pub type RecordKey {" <> records_keys <> "}
 
     pub fn get_record_info(record_key) {
-      case record_key {" <> records_info <> "}}",
+      case record_key {" <> string.join(records_info, "\n") <> "}}",
   )
 }
 
