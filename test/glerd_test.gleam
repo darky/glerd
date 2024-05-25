@@ -1,9 +1,10 @@
 import gleeunit
-
-pub type RecordTest {
-  RecordTest(name: String)
-}
+import glerd
 
 pub fn main() {
   gleeunit.main()
+}
+
+pub fn gen_test() {
+  glerd.do_main("test")
 }

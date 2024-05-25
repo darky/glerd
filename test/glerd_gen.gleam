@@ -19,20 +19,6 @@ pub type RecordKey {
   FixtureTestTestResult
   FixtureTestTestRecord
   FixtureTestNestedRecord
-  GlerdTypesIsString
-  GlerdTypesIsInt
-  GlerdTypesIsFloat
-  GlerdTypesIsBool
-  GlerdTypesIsList
-  GlerdTypesIsTuple2
-  GlerdTypesIsTuple3
-  GlerdTypesIsTuple4
-  GlerdTypesIsTuple5
-  GlerdTypesIsTuple6
-  GlerdTypesIsDict
-  GlerdTypesIsOption
-  GlerdTypesIsResult
-  GlerdTypesIsRecord
 }
 
 pub fn get_record_info(record_key) {
@@ -95,50 +81,5 @@ pub fn get_record_info(record_key) {
     ]
     FixtureTestTestRecord -> [#("nested", types.IsRecord("NestedRecord"))]
     FixtureTestNestedRecord -> [#("name", types.IsString)]
-    GlerdTypesIsString -> []
-    GlerdTypesIsInt -> []
-    GlerdTypesIsFloat -> []
-    GlerdTypesIsBool -> []
-    GlerdTypesIsList -> [#("__none__", types.IsRecord("FieldType"))]
-    GlerdTypesIsTuple2 -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsTuple3 -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsTuple4 -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsTuple5 -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsTuple6 -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsDict -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsOption -> [#("__none__", types.IsRecord("FieldType"))]
-    GlerdTypesIsResult -> [
-      #("__none__", types.IsRecord("FieldType")),
-      #("__none__", types.IsRecord("FieldType")),
-    ]
-    GlerdTypesIsRecord -> [#("__none__", types.IsString)]
   }
 }

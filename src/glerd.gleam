@@ -11,9 +11,13 @@ import justin
 import simplifile
 
 pub fn main() {
+  do_main("src")
+}
+
+pub fn do_main(root) {
   let records_info =
     fswalk.builder()
-    |> fswalk.with_path("src")
+    |> fswalk.with_path(root)
     |> fswalk.walk()
     |> iterator.filter(fn(entry_result) {
       case entry_result {
@@ -24,7 +28,7 @@ pub fn main() {
     })
     |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      fn(_ctx) { #(path_to_module_name("src", path), path) }
+      fn(_ctx) { #(path_to_module_name(root, path), path) }
     })
     |> iterator.map(fn(action) {
       use path <- act.do(action)
@@ -75,7 +79,7 @@ pub fn main() {
     |> string.join("\n")
 
   simplifile.write(
-    "./src/glerd_gen.gleam",
+    "./" <> root <> "/glerd_gen.gleam",
     "// this file was generated via \"gleam run -m glerd\"
 
     import glerd/types
