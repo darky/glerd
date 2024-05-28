@@ -20,7 +20,9 @@ pub fn do_main(root) {
     |> iterator.filter(fn(entry_result) {
       case entry_result {
         Ok(Entry(path, Stat(is_dir))) ->
-          is_dir == False && string.ends_with(path, ".gleam")
+          is_dir == False
+          && string.ends_with(path, ".gleam")
+          && !string.contains(path, "glerd_gen.gleam")
         _ -> False
       }
     })
