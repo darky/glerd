@@ -57,22 +57,11 @@ pub fn do_main(root) {
             "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
           })
         let record_fields = string.join(record_description, ",")
-        record_name <> " -> " <> "[" <> record_fields <> "]"
+        "#(\"" <> record_name <> "\"," <> "[" <> record_fields <> "])"
       }
       |> iterator.from_list
     })
     |> iterator.to_list
-
-  let records_keys =
-    records_info
-    |> list.map(fn(ri) {
-      let assert Ok(record_name) =
-        ri
-        |> string.split("->")
-        |> list.first
-      string.trim(record_name)
-    })
-    |> string.join("\n")
 
   simplifile.write(
     "./" <> root <> "/glerd_gen.gleam",
@@ -80,10 +69,7 @@ pub fn do_main(root) {
 
     import glerd/types
 
-    pub type RecordKey {" <> records_keys <> "}
-
-    pub fn get_record_info(record_key) {
-      case record_key {" <> string.join(records_info, "\n") <> "}}",
+    pub const record_info = [" <> string.join(records_info, ",\n") <> "]",
   )
 }
 
@@ -151,7 +137,7 @@ fn field_type(typ) {
       <> ","
       <> field_type(typ6)
       <> ")"
-    NamedType(record_name, ..) -> "types.IsRecord(" <> record_name <> ")"
+    NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
     _ -> "types.Unknown"
   }
 }
