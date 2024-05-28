@@ -32,19 +32,19 @@ pub fn generate(root) {
       fn(_ctx) { #(path_to_module_name(root, path), path) }
     })
     |> iterator.map(fn(action) {
-      use path <- act.do(action)
+      use path <- act.map(action)
       let assert Ok(content) = simplifile.read(path)
-      act.return(content)
+      content
     })
     |> iterator.map(fn(action) {
-      use content <- act.do(action)
+      use content <- act.map(action)
       let assert Ok(module) = glance.module(content)
-      act.return(module)
+      module
     })
     |> iterator.map(fn(action) {
-      use module <- act.do(action)
+      use module <- act.map(action)
       let Module(_, custom_types_definitions, ..) = module
-      act.return(custom_types_definitions)
+      custom_types_definitions
     })
     |> iterator.flat_map(fn(action) {
       {
