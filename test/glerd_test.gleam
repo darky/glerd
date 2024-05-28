@@ -6,5 +6,5 @@ pub fn main() {
 }
 
 pub fn gen_test() {
-  glerd.do_main("test")
+  glerd.generate("test")
 }

@@ -9,10 +9,10 @@ import gleam/string
 import simplifile
 
 pub fn main() {
-  do_main("src")
+  generate("src")
 }
 
-pub fn do_main(root) {
+pub fn generate(root) {
   let records_info =
     fswalk.builder()
     |> fswalk.with_path(root)
