@@ -3,7 +3,7 @@ version = "2.0.0"
 description = "Generate metadata of Gleam Records for runtime reflection"
 licences = ["MIT"]
 repository = { type = "github", user = "darky", repo = "glerd" }
-gleam = ">= 1.1.0"
+gleam = ">= 1.2.0"
 
 [dependencies]
 fswalk = ">= 3.0.1"
