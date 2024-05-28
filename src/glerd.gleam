@@ -1,3 +1,4 @@
+import act
 import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
@@ -28,27 +29,31 @@ pub fn generate(root) {
     })
     |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      path
+      fn(_ctx) { #(path_to_module_name(root, path), path) }
     })
-    |> iterator.map(fn(path) {
+    |> iterator.map(fn(action) {
+      use path <- act.do(action)
       let assert Ok(content) = simplifile.read(path)
-      content
+      act.return(content)
     })
-    |> iterator.map(fn(content) {
+    |> iterator.map(fn(action) {
+      use content <- act.do(action)
       let assert Ok(module) = glance.module(content)
-      module
+      act.return(module)
     })
-    |> iterator.map(fn(module) {
+    |> iterator.map(fn(action) {
+      use module <- act.do(action)
       let Module(_, custom_types_definitions, ..) = module
-      custom_types_definitions
+      act.return(custom_types_definitions)
     })
-    |> iterator.flat_map(fn(custom_type_definitions) {
+    |> iterator.flat_map(fn(action) {
       {
+        let #(m_name, custom_type_definitions) = action("")
         use custom_type_definition <- list.flat_map(custom_type_definitions)
         let Definition(_, custom_type) = custom_type_definition
         let CustomType(_, _, _, _, variants) = custom_type
         use variant <- list.map(variants)
-        let Variant(record_name, fields) = variant
+        let Variant(r_name, fields) = variant
         let record_description =
           list.map(fields, fn(field) {
             let Field(field_name, typ) = field
@@ -56,8 +61,8 @@ pub fn generate(root) {
               option.or(field_name, Some("__none__"))
             "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
           })
-        let record_fields = string.join(record_description, ",")
-        "#(\"" <> record_name <> "\"," <> "[" <> record_fields <> "])"
+        let fields = string.join(record_description, ",")
+        "#(\"" <> r_name <> "\",\"" <> m_name <> "\"," <> "[" <> fields <> "])"
       }
       |> iterator.from_list
     })
@@ -140,4 +145,10 @@ fn field_type(typ) {
     NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
     _ -> "types.Unknown"
   }
+}
+
+fn path_to_module_name(dir, path) {
+  path
+  |> string.replace(dir <> "/", "")
+  |> string.replace(".gleam", "")
 }

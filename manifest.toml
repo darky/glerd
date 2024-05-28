@@ -2,6 +2,7 @@
 # You typically do not need to edit this file
 
 packages = [
+  { name = "act", version = "0.3.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "act", source = "hex", outer_checksum = "C35A7750C97F37C7215189E3CE60687AF95F89D958C091125C2E394DD56F511E" },
   { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
   { name = "fswalk", version = "3.0.1", build_tools = ["gleam"], requirements = ["gleam_community_path", "gleam_stdlib", "simplifile"], otp_app = "fswalk", source = "hex", outer_checksum = "344B6600F50E638D0F4A51110235566F692EAED9CEDF9A65100DE0CFE88A9785" },
   { name = "glance", version = "0.11.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "glexer"], otp_app = "glance", source = "hex", outer_checksum = "8F3314D27773B7C3B9FB58D8C02C634290422CE531988C0394FA0DF8676B964D" },
@@ -13,6 +14,7 @@ packages = [
 ]
 
 [requirements]
+act = { version = ">= 0.3.0" }
 fswalk = { version = ">= 3.0.1" }
 glance = { version = ">= 0.11.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
