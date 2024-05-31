@@ -3,7 +3,6 @@ import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
 }
-import gleam/erlang/atom.{type Atom}
 import gleam/erlang/charlist.{type Charlist}
 import gleam/iterator
 import gleam/list
@@ -68,7 +67,7 @@ pub fn generate(root) {
       }
       |> iterator.from_list
     })
-    |> iterator.to_list
+    |> iterator.fold("", fn(acc, el) { acc <> el <> ",\n" })
 
   let gen_file_path = "./" <> root <> "/glerd_gen.gleam"
 
@@ -79,11 +78,13 @@ pub fn generate(root) {
 
       import glerd/types
 
-      pub const record_info = [" <> string.join(records_info, ",\n") <> "]",
+      pub const record_info = [" <> records_info <> "]",
     )
 
-  atom.create_from_string("gleam format " <> gen_file_path)
+  charlist.from_string("gleam format " <> gen_file_path)
   |> run_shell
+
+  Nil
 }
 
 fn field_type(typ) {
@@ -162,4 +163,4 @@ fn path_to_module_name(dir, path) {
 }
 
 @external(erlang, "os", "cmd")
-fn run_shell(command: Atom) -> Charlist
+fn run_shell(command: Charlist) -> Charlist
