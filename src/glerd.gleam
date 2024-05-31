@@ -96,64 +96,33 @@ fn field_type(typ) {
     NamedType(type_name, _, [typ]) if type_name == "List" ->
       "types.IsList(" <> field_type(typ) <> ")"
     NamedType(type_name, _, [key_type, val_type]) if type_name == "Dict" ->
-      "types.IsDict("
-      <> field_type(key_type)
-      <> ","
-      <> field_type(val_type)
-      <> ")"
+      "types.IsDict(" <> type_args([key_type, val_type]) <> ")"
     NamedType(type_name, _, [typ]) if type_name == "Option" ->
       "types.IsOption(" <> field_type(typ) <> ")"
     NamedType(type_name, _, [typ1, typ2]) if type_name == "Result" ->
-      "types.IsResult(" <> field_type(typ1) <> "," <> field_type(typ2) <> ")"
+      "types.IsResult(" <> type_args([typ1, typ2]) <> ")"
     TupleType([typ1, typ2]) ->
-      "types.IsTuple2(" <> field_type(typ1) <> "," <> field_type(typ2) <> ")"
+      "types.IsTuple2(" <> type_args([typ1, typ2]) <> ")"
     TupleType([typ1, typ2, typ3]) ->
-      "types.IsTuple3("
-      <> field_type(typ1)
-      <> ","
-      <> field_type(typ2)
-      <> ","
-      <> field_type(typ3)
-      <> ")"
+      "types.IsTuple3(" <> type_args([typ1, typ2, typ3]) <> ")"
     TupleType([typ1, typ2, typ3, typ4]) ->
-      "types.IsTuple4("
-      <> field_type(typ1)
-      <> ","
-      <> field_type(typ2)
-      <> ","
-      <> field_type(typ3)
-      <> ","
-      <> field_type(typ4)
-      <> ")"
+      "types.IsTuple4(" <> type_args([typ1, typ2, typ3, typ4]) <> ")"
     TupleType([typ1, typ2, typ3, typ4, typ5]) ->
-      "types.IsTuple5("
-      <> field_type(typ1)
-      <> ","
-      <> field_type(typ2)
-      <> ","
-      <> field_type(typ3)
-      <> ","
-      <> field_type(typ4)
-      <> ","
-      <> field_type(typ5)
-      <> ")"
+      "types.IsTuple5(" <> type_args([typ1, typ2, typ3, typ4, typ5]) <> ")"
     TupleType([typ1, typ2, typ3, typ4, typ5, typ6]) ->
       "types.IsTuple6("
-      <> field_type(typ1)
-      <> ","
-      <> field_type(typ2)
-      <> ","
-      <> field_type(typ3)
-      <> ","
-      <> field_type(typ4)
-      <> ","
-      <> field_type(typ5)
-      <> ","
-      <> field_type(typ6)
+      <> type_args([typ1, typ2, typ3, typ4, typ5, typ6])
       <> ")"
     NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
     _ -> "types.Unknown"
   }
+}
+
+fn type_args(types) {
+  types
+  |> list.map(fn(typ) { field_type(typ) })
+  |> list.intersperse(",")
+  |> string.join("")
 }
 
 fn path_to_module_name(dir, path) {
