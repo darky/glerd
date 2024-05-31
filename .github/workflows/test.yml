@@ -19,6 +19,5 @@ jobs:
           rebar3-version: "3"
       - run: gleam deps download
       - run: gleam test
-      - run: gleam format ./test/glerd_gen.gleam
       - run: gleam format --check src test
       - run: git diff --exit-code ./test/glerd_gen.gleam

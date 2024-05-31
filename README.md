@@ -10,13 +10,11 @@ gleam add --dev glerd
 ```
 
 ```sh
-gleam run -m glerd && gleam format ./src/glerd_gen.gleam
+gleam run -m glerd
 ```
 
 ## Development
 
 ```sh
-gleam test
-gleam format ./test/glerd_gen.gleam
-# then commit generated file
+gleam test # and then commit generated file
 ```
