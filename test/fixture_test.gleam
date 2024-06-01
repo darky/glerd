@@ -21,4 +21,5 @@ pub type TestRecords {
   TestOption(some_int: Option(Int))
   TestResult(result_field: Result(Int, String))
   TestRecord(nested: NestedRecord)
+  TestWithoutFieldName(String)
 }

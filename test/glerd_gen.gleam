@@ -82,5 +82,6 @@ pub const record_info = [
     [#("result_field", types.IsResult(types.IsInt, types.IsString))],
   ),
   #("TestRecord", "fixture_test", [#("nested", types.IsRecord("NestedRecord"))]),
+  #("TestWithoutFieldName", "fixture_test", [#("__none__", types.IsString)]),
   #("NestedRecord", "fixture_test", [#("name", types.IsString)]),
 ]
