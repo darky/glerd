@@ -55,14 +55,15 @@ pub fn generate(root) {
         let CustomType(_, _, _, _, variants) = custom_type
         use variant <- list.map(variants)
         let Variant(r_name, fields) = variant
-        let record_description =
-          list.map(fields, fn(field) {
+        let fields =
+          {
+            use field <- list.map(fields)
             let Field(field_name, typ) = field
             let assert Some(field_name) =
               option.or(field_name, Some("__none__"))
             "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
-          })
-        let fields = string.join(record_description, ",")
+          }
+          |> string.join(",")
         "#(\"" <> r_name <> "\",\"" <> m_name <> "\"," <> "[" <> fields <> "])"
       }
       |> iterator.from_list
@@ -120,7 +121,7 @@ fn field_type(typ) {
 
 fn type_args(types) {
   types
-  |> list.map(fn(typ) { field_type(typ) })
+  |> list.map(field_type)
   |> list.intersperse(",")
   |> string.join("")
 }
