@@ -45,28 +45,28 @@ pub fn generate(root) {
     |> iterator.map(fn(action) {
       use module <- act.map(action)
       let Module(_, custom_types_definitions, ..) = module
-      custom_types_definitions
+      iterator.from_list(custom_types_definitions)
+    })
+    |> iterator.map(fn(action) {
+      use it <- act.map(action)
+      use custom_type_definition <- iterator.flat_map(it)
+      let Definition(_, custom_type) = custom_type_definition
+      let CustomType(_, _, _, _, variants) = custom_type
+      iterator.from_list(variants)
     })
     |> iterator.flat_map(fn(action) {
-      {
-        let #(m_name, custom_type_definitions) = action("")
-        use custom_type_definition <- list.flat_map(custom_type_definitions)
-        let Definition(_, custom_type) = custom_type_definition
-        let CustomType(_, _, _, _, variants) = custom_type
-        use variant <- list.map(variants)
-        let Variant(r_name, fields) = variant
-        let fields =
-          {
-            use field <- list.map(fields)
-            let Field(field_name, typ) = field
-            let assert Some(field_name) =
-              option.or(field_name, Some("__none__"))
-            "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
-          }
-          |> string.join(",")
-        "#(\"" <> r_name <> "\",\"" <> m_name <> "\"," <> "[" <> fields <> "])"
-      }
-      |> iterator.from_list
+      let #(m_name, it) = action("")
+      use variant <- iterator.map(it)
+      let Variant(r_name, fields) = variant
+      let fields =
+        fields
+        |> list.map(fn(field) {
+          let Field(field_name, typ) = field
+          let assert Some(field_name) = option.or(field_name, Some("__none__"))
+          "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
+        })
+        |> string.join(",")
+      "#(\"" <> r_name <> "\",\"" <> m_name <> "\"," <> "[" <> fields <> "])"
     })
     |> iterator.fold("", fn(acc, el) { acc <> el <> ",\n" })
 
