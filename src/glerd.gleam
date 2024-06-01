@@ -3,11 +3,11 @@ import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
 }
-import gleam/erlang/charlist.{type Charlist}
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
 import gleam/string
+import gleamyshell
 import simplifile
 
 pub fn main() {
@@ -82,8 +82,8 @@ pub fn generate(root) {
       pub const record_info = [" <> records_info <> "]",
     )
 
-  charlist.from_string("gleam format " <> gen_file_path)
-  |> run_shell
+  let assert Ok(_) =
+    gleamyshell.execute("gleam", ".", ["format", gen_file_path])
 
   Nil
 }
@@ -131,6 +131,3 @@ fn path_to_module_name(dir, path) {
   |> string.replace(dir <> "/", "")
   |> string.replace(".gleam", "")
 }
-
-@external(erlang, "os", "cmd")
-fn run_shell(command: Charlist) -> Charlist
