@@ -18,6 +18,7 @@ jobs:
           gleam-version: "1.2.0"
           rebar3-version: "3"
       - run: gleam deps download
-      - run: gleam test
+      - run: gleam test --target erlang
+      - run: gleam test --target javascript
       - run: gleam format --check src test
       - run: git diff --exit-code ./test/glerd_gen.gleam
