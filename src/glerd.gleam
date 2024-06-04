@@ -6,9 +6,16 @@ import glance.{
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
+import gleam/result
 import gleam/string
 import gleamyshell
+import glexer.{type Position, Position}
+import glexer/token.{type Token, CommentDoc, UpperName}
 import simplifile
+
+type Context {
+  Context(module_name: String, lexems: List(#(Token, Position)))
+}
 
 pub fn main() {
   generate("src")
@@ -30,11 +37,16 @@ pub fn generate(root) {
     })
     |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      fn(_ctx) { #(path_to_module_name(root, path), path) }
-    })
-    |> it_act_map(fn(path) {
-      let assert Ok(content) = simplifile.read(path)
-      content
+      fn(_ctx) {
+        let assert Ok(content) = simplifile.read(path)
+        #(
+          Context(
+            path_to_module_name(root, path),
+            content |> glexer.new |> glexer.lex,
+          ),
+          content,
+        )
+      }
     })
     |> it_act_map(fn(content) {
       let assert Ok(module) = glance.module(content)
@@ -51,18 +63,13 @@ pub fn generate(root) {
       iterator.from_list(variants)
     })
     |> iterator.flat_map(fn(action) {
-      let #(m_name, it) = action("")
+      let #(ctx, it) = action(Context("", []))
+      let Context(m, lexems) = ctx
       use variant <- iterator.map(it)
-      let Variant(r_name, fields) = variant
-      let fields =
-        fields
-        |> list.map(fn(field) {
-          let Field(field_name, typ) = field
-          let assert Some(field_name) = option.or(field_name, Some("__none__"))
-          "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
-        })
-        |> string.join(",")
-      "#(\"" <> r_name <> "\",\"" <> m_name <> "\"," <> "[" <> fields <> "])"
+      let Variant(r, fields) = variant
+      let f = normalize_fields(fields)
+      let mt = lexems_to_meta(r, lexems)
+      "#(\"" <> r <> "\",\"" <> m <> "\"," <> "[" <> f <> "],\"" <> mt <> "\")"
     })
     |> iterator.fold("", fn(acc, el) { acc <> el <> ",\n" })
 
@@ -132,4 +139,31 @@ fn it_act_map(it, f) {
   use action <- iterator.map(it)
   use data <- act.map(action)
   data |> f
+}
+
+fn lexems_to_meta(record_name, lexems) {
+  let assert Ok(meta) =
+    lexems
+    |> list.window_by_2
+    |> list.find_map(fn(pair) {
+      case pair {
+        #(#(CommentDoc(meta), Position(_)), #(UpperName(rec_name), Position(_)))
+          if rec_name == record_name
+        -> Ok(meta)
+        _ -> Error(Nil)
+      }
+    })
+    |> result.or(Ok(""))
+    |> result.map(fn(s) { s |> string.trim_left })
+  meta
+}
+
+fn normalize_fields(fields) {
+  fields
+  |> list.map(fn(field) {
+    let Field(field_name, typ) = field
+    let assert Some(field_name) = option.or(field_name, Some("__none__"))
+    "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
+  })
+  |> string.join(",")
 }

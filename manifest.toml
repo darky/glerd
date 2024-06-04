@@ -21,4 +21,5 @@ glance = { version = ">= 0.11.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
 gleamyshell = { version = ">= 0.5.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
+glexer = { version = ">= 1.0.1 and < 2.0.0"}
 simplifile = { version = ">= 1.7.0" }

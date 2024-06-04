@@ -22,4 +22,6 @@ pub type TestRecords {
   TestResult(result_field: Result(Int, String))
   TestRecord(nested: NestedRecord)
   TestWithoutFieldName(String)
+  /// meta:true key:val
+  TestMeta(name: String)
 }

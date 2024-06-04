@@ -3,19 +3,22 @@
 import glerd/types
 
 pub const record_info = [
-  #("TestString", "fixture_test", [#("name", types.IsString)]),
-  #("TestInt", "fixture_test", [#("age", types.IsInt)]),
-  #("TestFloat", "fixture_test", [#("distance", types.IsFloat)]),
-  #("TestBool", "fixture_test", [#("is_exists", types.IsBool)]),
+  #("TestString", "fixture_test", [#("name", types.IsString)], ""),
+  #("TestInt", "fixture_test", [#("age", types.IsInt)], ""),
+  #("TestFloat", "fixture_test", [#("distance", types.IsFloat)], ""),
+  #("TestBool", "fixture_test", [#("is_exists", types.IsBool)], ""),
   #(
     "TestMultiple",
     "fixture_test",
     [#("name", types.IsString), #("age", types.IsInt)],
-  ), #("TestList", "fixture_test", [#("names", types.IsList(types.IsString))]),
+    "",
+  ),
+  #("TestList", "fixture_test", [#("names", types.IsList(types.IsString))], ""),
   #(
     "TestTuple2",
     "fixture_test",
     [#("str_or_int", types.IsTuple2(types.IsString, types.IsInt))],
+    "",
   ),
   #(
     "TestTuple3",
@@ -26,6 +29,7 @@ pub const record_info = [
         types.IsTuple3(types.IsString, types.IsInt, types.IsString),
       ),
     ],
+    "",
   ),
   #(
     "TestTuple4",
@@ -36,6 +40,7 @@ pub const record_info = [
         types.IsTuple4(types.IsString, types.IsInt, types.IsString, types.IsInt),
       ),
     ],
+    "",
   ),
   #(
     "TestTuple5",
@@ -52,6 +57,7 @@ pub const record_info = [
         ),
       ),
     ],
+    "",
   ),
   #(
     "TestTuple6",
@@ -69,19 +75,37 @@ pub const record_info = [
         ),
       ),
     ],
+    "",
   ),
   #(
     "TestDict",
     "fixture_test",
     [#("dict", types.IsDict(types.IsString, types.IsInt))],
+    "",
   ),
-  #("TestOption", "fixture_test", [#("some_int", types.IsOption(types.IsInt))]),
+  #(
+    "TestOption",
+    "fixture_test",
+    [#("some_int", types.IsOption(types.IsInt))],
+    "",
+  ),
   #(
     "TestResult",
     "fixture_test",
     [#("result_field", types.IsResult(types.IsInt, types.IsString))],
+    "",
   ),
-  #("TestRecord", "fixture_test", [#("nested", types.IsRecord("NestedRecord"))]),
-  #("TestWithoutFieldName", "fixture_test", [#("__none__", types.IsString)]),
-  #("NestedRecord", "fixture_test", [#("name", types.IsString)]),
+  #(
+    "TestRecord",
+    "fixture_test",
+    [#("nested", types.IsRecord("NestedRecord"))],
+    "",
+  ),
+  #("TestWithoutFieldName", "fixture_test", [#("__none__", types.IsString)], ""),
+  #(
+    "TestMeta",
+    "fixture_test",
+    [#("name", types.IsString)],
+    "meta:true key:val",
+  ), #("NestedRecord", "fixture_test", [#("name", types.IsString)], ""),
 ]
