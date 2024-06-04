@@ -32,23 +32,19 @@ pub fn generate(root) {
       let assert Ok(Entry(path, _)) = entry_result
       fn(_ctx) { #(path_to_module_name(root, path), path) }
     })
-    |> iterator.map(fn(action) {
-      use path <- act.map(action)
+    |> it_act_map(fn(path) {
       let assert Ok(content) = simplifile.read(path)
       content
     })
-    |> iterator.map(fn(action) {
-      use content <- act.map(action)
+    |> it_act_map(fn(content) {
       let assert Ok(module) = glance.module(content)
       module
     })
-    |> iterator.map(fn(action) {
-      use module <- act.map(action)
+    |> it_act_map(fn(module) {
       let Module(_, custom_types_definitions, ..) = module
       iterator.from_list(custom_types_definitions)
     })
-    |> iterator.map(fn(action) {
-      use it <- act.map(action)
+    |> it_act_map(fn(it) {
       use custom_type_definition <- iterator.flat_map(it)
       let Definition(_, custom_type) = custom_type_definition
       let CustomType(_, _, _, _, variants) = custom_type
@@ -130,4 +126,10 @@ fn path_to_module_name(dir, path) {
   path
   |> string.replace(dir <> "/", "")
   |> string.replace(".gleam", "")
+}
+
+fn it_act_map(it, f) {
+  use action <- iterator.map(it)
+  use data <- act.map(action)
+  data |> f
 }
