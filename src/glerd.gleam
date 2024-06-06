@@ -1,4 +1,5 @@
 import act
+import act/state
 import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
@@ -37,21 +38,21 @@ pub fn generate(root) {
     })
     |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      fn(_ctx) {
-        let assert Ok(content) = simplifile.read(path)
-        #(
-          Context(
-            path_to_module_name(root, path),
-            content |> glexer.new |> glexer.lex,
-          ),
-          content,
-        )
+      fn(ctx) {
+        #(Context(..ctx, module_name: path_to_module_name(root, path)), path)
       }
+    })
+    |> it_act_map(fn(path) {
+      let assert Ok(content) = simplifile.read(path)
+      content
     })
     |> it_act_map(fn(content) {
       let assert Ok(module) = glance.module(content)
-      module
+      let lexems = content |> glexer.new |> glexer.lex
+      use <- state.update(fn(ctx) { Context(..ctx, lexems: lexems) })
+      fn(ctx) { #(ctx, module) }
     })
+    |> iterator.map(act.flatten)
     |> it_act_map(fn(module) {
       let Module(_, custom_types_definitions, ..) = module
       iterator.from_list(custom_types_definitions)
