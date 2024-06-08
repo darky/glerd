@@ -47,12 +47,15 @@ pub fn generate(root) {
       content
     })
     |> it_act_map(fn(content) {
-      let assert Ok(module) = glance.module(content)
       let lexems = content |> glexer.new |> glexer.lex
       use <- state.update(fn(ctx) { Context(..ctx, lexems: lexems) })
-      fn(ctx) { #(ctx, module) }
+      fn(ctx) { #(ctx, content) }
     })
     |> iterator.map(act.flatten)
+    |> it_act_map(fn(content) {
+      let assert Ok(module) = glance.module(content)
+      module
+    })
     |> it_act_map(fn(module) {
       let Module(_, custom_types_definitions, ..) = module
       iterator.from_list(custom_types_definitions)
