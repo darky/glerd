@@ -67,10 +67,8 @@ pub fn generate(root) {
       iterator.from_list(variants)
     })
     |> iterator.flat_map(fn(action) {
-      let #(ctx, it) = action(Context("", []))
-      let Context(m, lexems) = ctx
-      use variant <- iterator.map(it)
-      let Variant(r, fields) = variant
+      let #(Context(m, lexems), it) = action(Context("", []))
+      use Variant(r, fields) <- iterator.map(it)
       let f = normalize_fields(fields)
       let mt = lexems_to_meta(r, lexems)
       "#(\"" <> r <> "\",\"" <> m <> "\"," <> "[" <> f <> "],\"" <> mt <> "\")"
