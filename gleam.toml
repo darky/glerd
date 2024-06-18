@@ -6,8 +6,8 @@ repository = { type = "github", user = "darky", repo = "glerd" }
 gleam = ">= 1.2.0"
 
 [dependencies]
-act = ">= 0.4.0"
 fswalk = ">= 3.0.1"
+functx = ">= 1.0.0"
 glance = ">= 0.11.0"
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
 gleamyshell = ">= 1.0.0"
