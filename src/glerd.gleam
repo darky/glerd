@@ -2,6 +2,7 @@ import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
 }
+import gleam/dict
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
@@ -96,11 +97,12 @@ fn type_args(types) {
 
 fn ast_to_code(root, path, content) {
   let lexems = content |> glexer.new |> glexer.lex
+  let meta = lexems |> lexems_to_meta
   let m = module_name_from_path(root, path)
   let variants = ast_from_content(content)
   use Variant(r, fields) <- list.map(variants)
   let f = normalize_fields(fields)
-  let mt = lexems_to_meta(r, lexems)
+  let assert Ok(mt) = dict.get(meta, r) |> result.or(Ok(""))
   "#(\"" <> r <> "\",\"" <> m <> "\"," <> "[" <> f <> "],\"" <> mt <> "\")"
 }
 
@@ -119,21 +121,16 @@ fn ast_from_content(content) {
   variants
 }
 
-fn lexems_to_meta(record_name, lexems) {
-  let assert Ok(meta) =
-    lexems
-    |> list.window_by_2
-    |> list.find_map(fn(pair) {
-      case pair {
-        #(#(CommentDoc(meta), Position(_)), #(UpperName(rec_name), Position(_)))
-          if rec_name == record_name
-        -> Ok(meta)
-        _ -> Error(Nil)
-      }
-    })
-    |> result.or(Ok(""))
-    |> result.map(fn(s) { s |> string.trim_left })
-  meta
+fn lexems_to_meta(lexems) {
+  lexems
+  |> list.window_by_2
+  |> list.fold(dict.new(), fn(meta_dict, pair) {
+    case pair {
+      #(#(CommentDoc(meta), Position(_)), #(UpperName(rec_name), Position(_))) ->
+        dict.insert(meta_dict, rec_name, meta |> string.trim_left)
+      _ -> meta_dict
+    }
+  })
 }
 
 fn normalize_fields(fields) {
