@@ -2,7 +2,7 @@ import fswalk.{Entry, Stat}
 import glance.{
   CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
 }
-import gleam/dict
+import gleam/dict.{type Dict}
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
@@ -11,7 +11,32 @@ import gleam/string
 import gleamyshell
 import glexer.{type Position, Position}
 import glexer/token.{CommentDoc, UpperName}
+import gluple
 import simplifile
+
+type FilePath {
+  FilePath(String)
+}
+
+type FileContent {
+  FileContent(String)
+}
+
+type ModuleName {
+  ModuleName(String)
+}
+
+type RecordName {
+  RecordName(String)
+}
+
+type Meta {
+  Meta(String)
+}
+
+type MetaDict {
+  MetaDict(Dict(RecordName, Meta))
+}
 
 pub fn main() {
   generate("src")
@@ -31,13 +56,85 @@ pub fn generate(root) {
         _ -> False
       }
     })
-    |> iterator.flat_map(fn(entry_result) {
+    |> iterator.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
-      let assert Ok(content) = simplifile.read(path)
-      ast_to_code(root, path, content)
-      |> iterator.from_list
+      FilePath(path)
     })
-    |> iterator.fold("", fn(acc, el) { acc <> el <> ",\n" })
+    |> iterator.map(fn(file_path) {
+      let FilePath(path) = file_path
+      let assert Ok(content) = simplifile.read(path)
+      #(file_path, content |> FileContent)
+    })
+    |> iterator.map(fn(ctx) {
+      let #(_, FileContent(content)) = ctx
+      content
+      |> glexer.new
+      |> glexer.lex
+      |> list.window_by_2
+      |> list.fold(dict.new(), fn(meta_dict, pair) {
+        case pair {
+          #(
+            #(CommentDoc(meta), Position(_)),
+            #(UpperName(rec_name), Position(_)),
+          ) ->
+            dict.insert(
+              meta_dict,
+              rec_name |> RecordName,
+              meta |> string.trim_left |> Meta,
+            )
+          _ -> meta_dict
+        }
+      })
+      |> MetaDict
+      |> gluple.append2(ctx, _)
+    })
+    |> iterator.map(fn(ctx) {
+      let #(FilePath(path), _, _) = ctx
+      path
+      |> string.replace(root <> "/", "")
+      |> string.replace(".gleam", "")
+      |> ModuleName
+      |> gluple.append3(ctx, _)
+    })
+    |> iterator.map(fn(ctx) {
+      let #(_, FileContent(content), _, _) = ctx
+      let assert Ok(module) = glance.module(content)
+      let Module(_, custom_types_definitions, ..) = module
+      {
+        use custom_type_definition <- list.flat_map(custom_types_definitions)
+        let Definition(_, custom_type) = custom_type_definition
+        let CustomType(_, _, _, _, variants) = custom_type
+        variants
+      }
+      |> gluple.append4(ctx, _)
+    })
+    |> iterator.map(fn(ctx) {
+      let #(_, _, MetaDict(meta_dict), ModuleName(module_name), variants) = ctx
+      use Variant(record_name, fields) <- list.map(variants)
+      let fields =
+        fields
+        |> list.map(fn(field) {
+          let Field(field_name, typ) = field
+          let assert Some(field_name) = option.or(field_name, Some("__none__"))
+          "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
+        })
+        |> string.join(",")
+      let assert Ok(Meta(meta)) =
+        dict.get(meta_dict, record_name |> RecordName)
+        |> result.or(Ok(Meta("")))
+      "#(\""
+      <> record_name
+      <> "\",\""
+      <> module_name
+      <> "\","
+      <> "["
+      <> fields
+      <> "],\""
+      <> meta
+      <> "\")"
+    })
+    |> iterator.flat_map(fn(record_code) { record_code |> iterator.from_list })
+    |> iterator.fold("", fn(acc, record_code) { acc <> record_code <> ",\n" })
 
   let gen_file_path = "./" <> root <> "/glerd_gen.gleam"
 
@@ -93,52 +190,4 @@ fn type_args(types) {
   |> list.map(field_type)
   |> list.intersperse(",")
   |> string.join("")
-}
-
-fn ast_to_code(root, path, content) {
-  let lexems = content |> glexer.new |> glexer.lex
-  let meta = lexems |> lexems_to_meta
-  let m = module_name_from_path(root, path)
-  let variants = ast_from_content(content)
-  use Variant(r, fields) <- list.map(variants)
-  let f = normalize_fields(fields)
-  let assert Ok(mt) = dict.get(meta, r) |> result.or(Ok(""))
-  "#(\"" <> r <> "\",\"" <> m <> "\"," <> "[" <> f <> "],\"" <> mt <> "\")"
-}
-
-fn module_name_from_path(root, path) {
-  path
-  |> string.replace(root <> "/", "")
-  |> string.replace(".gleam", "")
-}
-
-fn ast_from_content(content) {
-  let assert Ok(module) = glance.module(content)
-  let Module(_, custom_types_definitions, ..) = module
-  use custom_type_definition <- list.flat_map(custom_types_definitions)
-  let Definition(_, custom_type) = custom_type_definition
-  let CustomType(_, _, _, _, variants) = custom_type
-  variants
-}
-
-fn lexems_to_meta(lexems) {
-  lexems
-  |> list.window_by_2
-  |> list.fold(dict.new(), fn(meta_dict, pair) {
-    case pair {
-      #(#(CommentDoc(meta), Position(_)), #(UpperName(rec_name), Position(_))) ->
-        dict.insert(meta_dict, rec_name, meta |> string.trim_left)
-      _ -> meta_dict
-    }
-  })
-}
-
-fn normalize_fields(fields) {
-  fields
-  |> list.map(fn(field) {
-    let Field(field_name, typ) = field
-    let assert Some(field_name) = option.or(field_name, Some("__none__"))
-    "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
-  })
-  |> string.join(",")
 }
