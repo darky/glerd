@@ -11,31 +11,31 @@ import gleam/string
 import gleamyshell
 import glexer.{type Position, Position}
 import glexer/token.{CommentDoc, UpperName}
-import gluple
+import gluple/addition as ga
 import simplifile
 
 type FilePath {
-  FilePath(String)
+  FilePath(val: String)
 }
 
 type FileContent {
-  FileContent(String)
+  FileContent(val: String)
 }
 
 type ModuleName {
-  ModuleName(String)
+  ModuleName(val: String)
 }
 
 type RecordName {
-  RecordName(String)
+  RecordName(val: String)
 }
 
 type Meta {
-  Meta(String)
+  Meta(val: String)
 }
 
 type MetaDict {
-  MetaDict(Dict(RecordName, Meta))
+  MetaDict(val: Dict(RecordName, Meta))
 }
 
 pub fn main() {
@@ -61,13 +61,12 @@ pub fn generate(root) {
       FilePath(path)
     })
     |> iterator.map(fn(file_path) {
-      let FilePath(path) = file_path
-      let assert Ok(content) = simplifile.read(path)
+      let assert Ok(content) = file_path.val |> simplifile.read
       #(file_path, content |> FileContent)
     })
     |> iterator.map(fn(ctx) {
-      let #(_, FileContent(content)) = ctx
-      content
+      use _, file_content <- ga.with_append2(ctx)
+      file_content.val
       |> glexer.new
       |> glexer.lex
       |> list.window_by_2
@@ -86,30 +85,25 @@ pub fn generate(root) {
         }
       })
       |> MetaDict
-      |> gluple.append2(ctx, _)
     })
     |> iterator.map(fn(ctx) {
-      let #(FilePath(path), _, _) = ctx
-      path
+      use file_path, _, _ <- ga.with_append3(ctx)
+      file_path.val
       |> string.replace(root <> "/", "")
       |> string.replace(".gleam", "")
       |> ModuleName
-      |> gluple.append3(ctx, _)
     })
     |> iterator.map(fn(ctx) {
-      let #(_, FileContent(content), _, _) = ctx
-      let assert Ok(module) = glance.module(content)
+      use _, file_content, _, _ <- ga.with_append4(ctx)
+      let assert Ok(module) = file_content.val |> glance.module
       let Module(_, custom_types_definitions, ..) = module
-      {
-        use custom_type_definition <- list.flat_map(custom_types_definitions)
-        let Definition(_, custom_type) = custom_type_definition
-        let CustomType(_, _, _, _, variants) = custom_type
-        variants
-      }
-      |> gluple.append4(ctx, _)
+      use custom_type_definition <- list.flat_map(custom_types_definitions)
+      let Definition(_, custom_type) = custom_type_definition
+      let CustomType(_, _, _, _, variants) = custom_type
+      variants
     })
     |> iterator.map(fn(ctx) {
-      let #(_, _, MetaDict(meta_dict), ModuleName(module_name), variants) = ctx
+      let #(_, _, meta_dict, module_name, variants) = ctx
       use Variant(record_name, fields) <- list.map(variants)
       let fields =
         fields
@@ -120,12 +114,12 @@ pub fn generate(root) {
         })
         |> string.join(",")
       let assert Ok(Meta(meta)) =
-        dict.get(meta_dict, record_name |> RecordName)
+        dict.get(meta_dict.val, record_name |> RecordName)
         |> result.or(Ok(Meta("")))
       "#(\""
       <> record_name
       <> "\",\""
-      <> module_name
+      <> module_name.val
       <> "\","
       <> "["
       <> fields
