@@ -12,6 +12,7 @@ import gleamyshell
 import glexer.{type Position, Position}
 import glexer/token.{CommentDoc, UpperName}
 import gluple/addition as ga
+import gluple/removal as gr
 import simplifile
 
 type FilePath {
@@ -65,7 +66,15 @@ pub fn generate(root) {
       #(file_path, content |> FileContent)
     })
     |> iterator.map(fn(ctx) {
-      use _, file_content <- ga.with_append2(ctx)
+      use file_path, _ <- ga.with_append2(ctx)
+      file_path.val
+      |> string.replace(root <> "/", "")
+      |> string.replace(".gleam", "")
+      |> ModuleName
+    })
+    |> iterator.map(fn(ctx) { ctx |> gr.remove_first3 })
+    |> iterator.map(fn(ctx) {
+      use file_content, _ <- ga.with_append2(ctx)
       file_content.val
       |> glexer.new
       |> glexer.lex
@@ -87,14 +96,7 @@ pub fn generate(root) {
       |> MetaDict
     })
     |> iterator.map(fn(ctx) {
-      use file_path, _, _ <- ga.with_append3(ctx)
-      file_path.val
-      |> string.replace(root <> "/", "")
-      |> string.replace(".gleam", "")
-      |> ModuleName
-    })
-    |> iterator.map(fn(ctx) {
-      use _, file_content, _, _ <- ga.with_append4(ctx)
+      use file_content, _, _ <- ga.with_append3(ctx)
       let assert Ok(module) = file_content.val |> glance.module
       let Module(_, custom_types_definitions, ..) = module
       use custom_type_definition <- list.flat_map(custom_types_definitions)
@@ -102,8 +104,9 @@ pub fn generate(root) {
       let CustomType(_, _, _, _, variants) = custom_type
       variants
     })
+    |> iterator.map(fn(ctx) { ctx |> gr.remove_first4 })
     |> iterator.map(fn(ctx) {
-      let #(_, _, meta_dict, module_name, variants) = ctx
+      let #(module_name, meta_dict, variants) = ctx
       use Variant(record_name, fields) <- list.map(variants)
       let fields =
         fields

@@ -10,7 +10,7 @@ packages = [
   { name = "gleamyshell", version = "1.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleamyshell", source = "hex", outer_checksum = "48FEEDD643B6381817222D94DB94BD3803C4B3575911B73A8C8C96620F09DBCF" },
   { name = "gleeunit", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "F7A7228925D3EE7D0813C922E062BFD6D7E9310F0BEE585D3A42F3307E3CFD13" },
   { name = "glexer", version = "1.0.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "glexer", source = "hex", outer_checksum = "BD477AD657C2B637FEF75F2405FAEFFA533F277A74EF1A5E17B55B1178C228FB" },
-  { name = "gluple", version = "2.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gluple", source = "hex", outer_checksum = "914CE96C09D55CF72B657DFFF10302D2038276125CC1F78656BCF4BBC4291A58" },
+  { name = "gluple", version = "2.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gluple", source = "hex", outer_checksum = "7D61583F17EFBF26043C14A417FF56D1BC709A45F75BB499E35CA28C9C3A8EB9" },
   { name = "simplifile", version = "1.7.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "1D5DFA3A2F9319EC85825F6ED88B8E449F381B0D55A62F5E61424E748E7DDEB0" },
 ]
 
@@ -21,5 +21,5 @@ gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
 gleamyshell = { version = ">= 1.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
 glexer = { version = ">= 1.0.1 and < 2.0.0" }
-gluple = { version = ">= 2.0.0" }
+gluple = { version = ">= 2.2.0" }
 simplifile = { version = ">= 1.7.0" }
