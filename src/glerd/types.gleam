@@ -1,23 +1,16 @@
-pub type FieldType(r) {
+pub type FieldType {
   IsString
   IsInt
   IsFloat
   IsBool
-  IsList(FieldType(r))
-  IsTuple2(FieldType(r), FieldType(r))
-  IsTuple3(FieldType(r), FieldType(r), FieldType(r))
-  IsTuple4(FieldType(r), FieldType(r), FieldType(r), FieldType(r))
-  IsTuple5(FieldType(r), FieldType(r), FieldType(r), FieldType(r), FieldType(r))
-  IsTuple6(
-    FieldType(r),
-    FieldType(r),
-    FieldType(r),
-    FieldType(r),
-    FieldType(r),
-    FieldType(r),
-  )
-  IsDict(FieldType(r), FieldType(r))
-  IsOption(FieldType(r))
-  IsResult(FieldType(r), FieldType(r))
-  IsRecord(r)
+  IsList(FieldType)
+  IsTuple2(FieldType, FieldType)
+  IsTuple3(FieldType, FieldType, FieldType)
+  IsTuple4(FieldType, FieldType, FieldType, FieldType)
+  IsTuple5(FieldType, FieldType, FieldType, FieldType, FieldType)
+  IsTuple6(FieldType, FieldType, FieldType, FieldType, FieldType, FieldType)
+  IsDict(FieldType, FieldType)
+  IsOption(FieldType)
+  IsResult(FieldType, FieldType)
+  IsRecord(String)
 }
