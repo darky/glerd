@@ -23,7 +23,7 @@ gleam run -m glerd
 ```
 
 This reads Gleam source files in the `src` directory of a project and creates
-a `gleam_gen.gleam` output file containing metadata for each of the Records in
+a `glerd_gen.gleam` output file containing metadata for each of the Records in
 those files.
 
 ## Example output
@@ -41,7 +41,7 @@ pub type User {
 
 the output will be:
 
-###### src/gleam_gen.gleam
+###### src/glerd_gen.gleam
 
 ```gleam
 import glerd/types
