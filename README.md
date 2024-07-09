@@ -30,26 +30,31 @@ those files.
 
 If this record exists in a source file:
 
+###### src/user.gleam
+
 ```gleam
 pub type User {
+  /// some metadata
   User(id: Int, name: String, email: String)
 }
 ```
 
 the output will be:
 
+###### src/gleam_gen.gleam
+
 ```gleam
 import glerd/types
 
 pub const record_info = [
   #(
-    "User",
-    "user",
+    "User", // record name
+    "user", // module name
     [
       #("id", types.IsInt), #("name", types.IsString),
       #("email", types.IsString),
     ],
-    "",
+    "some metadata",
   ),
 ]
 ```
