@@ -2,6 +2,8 @@
 
 [![Package Version](https://img.shields.io/hexpm/v/glerd)](https://hex.pm/packages/glerd)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/glerd/)
+![Erlang-compatible](https://img.shields.io/badge/target-erlang-a2003e)
+![JavaScript-compatible](https://img.shields.io/badge/target-javascript-f1e05a)
 
 Glerd is tooling, written in [Gleam](https://gleam.run/), that generates
 metadata that describes Gleam [Records](https://tour.gleam.run/data-types/records/).
