@@ -24,4 +24,7 @@ pub type TestRecords {
   TestWithoutFieldName(String)
   /// meta:true key:val
   TestMeta(name: String)
+  /// meta:true
+  /// key:val
+  TestMetaMultiline(name: String)
 }

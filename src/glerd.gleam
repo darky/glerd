@@ -6,6 +6,7 @@ import gleam/dict.{type Dict}
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
+import gleam/pair
 import gleam/result
 import gleam/string
 import gleamyshell
@@ -78,21 +79,28 @@ pub fn generate(root) {
       file_content.val
       |> glexer.new
       |> glexer.lex
-      |> list.window_by_2
-      |> list.fold(dict.new(), fn(meta_dict, pair) {
-        case pair {
-          #(
-            #(CommentDoc(meta), Position(_)),
-            #(UpperName(rec_name), Position(_)),
-          ) ->
-            dict.insert(
-              meta_dict,
-              rec_name |> RecordName,
-              meta |> string.trim_left |> Meta,
+      |> list.fold(#([], dict.new()), fn(acc, lexem) {
+        let #(meta_batch, meta_final) = acc
+        let meta_batch_not_empty = list.length(meta_batch) > 0
+        case lexem {
+          #(CommentDoc(meta), Position(_)) -> #(
+            meta_batch |> list.append([meta |> string.trim]),
+            meta_final,
+          )
+          #(UpperName(rec_name), Position(_)) if meta_batch_not_empty -> {
+            #(
+              [],
+              dict.insert(
+                meta_final,
+                rec_name |> RecordName,
+                meta_batch |> string.join(" ") |> string.trim |> Meta,
+              ),
             )
-          _ -> meta_dict
+          }
+          _ -> #([], meta_final)
         }
       })
+      |> pair.second
       |> MetaDict
     })
     |> iterator.map(fn(ctx) {

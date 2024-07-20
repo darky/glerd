@@ -107,5 +107,11 @@ pub const record_info = [
     "fixture_test",
     [#("name", types.IsString)],
     "meta:true key:val",
+  ),
+  #(
+    "TestMetaMultiline",
+    "fixture_test",
+    [#("name", types.IsString)],
+    "meta:true key:val",
   ), #("NestedRecord", "fixture_test", [#("name", types.IsString)], ""),
 ]
