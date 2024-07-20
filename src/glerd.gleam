@@ -7,6 +7,7 @@ import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
 import gleam/pair
+import gleam/queue
 import gleam/result
 import gleam/string
 import gleamyshell
@@ -79,25 +80,25 @@ pub fn generate(root) {
       file_content.val
       |> glexer.new
       |> glexer.lex
-      |> list.fold(#([], dict.new()), fn(acc, lexem) {
+      |> list.fold(#(queue.new(), dict.new()), fn(acc, lexem) {
         let #(meta_batch, meta_final) = acc
-        let meta_batch_not_empty = list.length(meta_batch) > 0
+        let meta_batch_is_empty = queue.is_empty(meta_batch)
         case lexem {
           #(CommentDoc(meta), Position(_)) -> #(
-            meta_batch |> list.append([meta |> string.trim]),
+            meta_batch |> queue.push_back(meta |> string.trim),
             meta_final,
           )
-          #(UpperName(rec_name), Position(_)) if meta_batch_not_empty -> {
+          #(UpperName(rec_name), Position(_)) if !meta_batch_is_empty -> {
             #(
-              [],
+              queue.new(),
               dict.insert(
                 meta_final,
                 rec_name |> RecordName,
-                meta_batch |> string.join(" ") |> string.trim |> Meta,
+                meta_batch |> stringify_queue("") |> string.trim |> Meta,
               ),
             )
           }
-          _ -> #([], meta_final)
+          _ -> #(queue.new(), meta_final)
         }
       })
       |> pair.second
@@ -195,4 +196,11 @@ fn type_args(types) {
   |> list.map(field_type)
   |> list.intersperse(",")
   |> string.join("")
+}
+
+fn stringify_queue(que, str) {
+  case que |> queue.pop_front {
+    Ok(#(el, que)) -> stringify_queue(que, str <> " " <> el)
+    Error(Nil) -> str
+  }
 }
