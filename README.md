@@ -83,3 +83,4 @@ gleam test # and then commit generated file
 ## See also
 
 * [Codegen for JSON encoders/decoders using Glerd](https://github.com/darky/glerd-json)
+* [Gleam Record validators using Glerd metadata](https://github.com/darky/glerd-valid)
