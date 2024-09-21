@@ -17,9 +17,22 @@ jobs:
           otp-version: "27.0.0"
           gleam-version: "1.5.0"
           rebar3-version: "3"
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - run: gleam deps download
       - run: gleam test --target erlang
       - run: git diff --exit-code ./test/glerd_gen.gleam
-      - run: gleam test --target javascript
+      - run: gleam test --target javascript --runtime node
+      - run: git diff --exit-code ./test/glerd_gen.gleam
+      - run: gleam test --target javascript --runtime deno
+      - run: git diff --exit-code ./test/glerd_gen.gleam
+      - run: gleam test --target javascript --runtime bun
       - run: git diff --exit-code ./test/glerd_gen.gleam
       - run: gleam format --check src test
