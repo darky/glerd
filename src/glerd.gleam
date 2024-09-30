@@ -1,8 +1,10 @@
 import fswalk.{Entry, Stat}
 import glance.{
-  CustomType, Definition, Field, Module, NamedType, TupleType, Variant,
+  CustomType, Definition, Field, FunctionType, Module, NamedType, TupleType,
+  Variant,
 }
 import gleam/dict.{type Dict}
+import gleam/io
 import gleam/iterator
 import gleam/list
 import gleam/option.{Some}
@@ -166,6 +168,7 @@ fn field_type(typ) {
     NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
     NamedType(type_name, ..) if type_name == "Float" -> "types.IsFloat"
     NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
+    NamedType(type_name, ..) if type_name == "Nil" -> "types.IsNil"
     NamedType(type_name, _, [typ]) if type_name == "List" ->
       "types.IsList(" <> field_type(typ) <> ")"
     NamedType(type_name, _, [key_type, val_type]) if type_name == "Dict" ->
@@ -187,7 +190,28 @@ fn field_type(typ) {
       <> type_args([typ1, typ2, typ3, typ4, typ5, typ6])
       <> ")"
     NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
-    _ -> "types.Unknown"
+    FunctionType([], return) ->
+      "types.IsFunction0(" <> type_args([return]) <> ")"
+    FunctionType([typ1], return) ->
+      "types.IsFunction1(" <> type_args([typ1, return]) <> ")"
+    FunctionType([typ1, typ2], return) ->
+      "types.IsFunction2(" <> type_args([typ1, typ2, return]) <> ")"
+    FunctionType([typ1, typ2, typ3], return) ->
+      "types.IsFunction3(" <> type_args([typ1, typ2, typ3, return]) <> ")"
+    FunctionType([typ1, typ2, typ3, typ4], return) ->
+      "types.IsFunction4(" <> type_args([typ1, typ2, typ3, typ4, return]) <> ")"
+    FunctionType([typ1, typ2, typ3, typ4, typ5], return) ->
+      "types.IsFunction5("
+      <> type_args([typ1, typ2, typ3, typ4, typ5, return])
+      <> ")"
+    FunctionType([typ1, typ2, typ3, typ4, typ5, typ6], return) ->
+      "types.IsFunction6("
+      <> type_args([typ1, typ2, typ3, typ4, typ5, typ6, return])
+      <> ")"
+    _ -> {
+      io.debug(typ)
+      "types.Unknown"
+    }
   }
 }
 
