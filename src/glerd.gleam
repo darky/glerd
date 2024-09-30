@@ -191,42 +191,22 @@ fn field_type(typ) {
       <> ")"
     NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
     FunctionType([], return) ->
-      "types.IsFunction0(\"" <> field_type(return) <> "\")"
+      "types.IsFunction0(" <> type_args([return]) <> ")"
     FunctionType([typ1], return) ->
-      "types.IsFunction1("
-      <> type_args([typ1])
-      <> ", "
-      <> field_type(return)
-      <> ")"
+      "types.IsFunction1(" <> type_args([typ1, return]) <> ")"
     FunctionType([typ1, typ2], return) ->
-      "types.IsFunction2("
-      <> type_args([typ1, typ2])
-      <> ", "
-      <> field_type(return)
-      <> ")"
+      "types.IsFunction2(" <> type_args([typ1, typ2, return]) <> ")"
     FunctionType([typ1, typ2, typ3], return) ->
-      "types.IsFunction3("
-      <> type_args([typ1, typ2, typ3])
-      <> ", "
-      <> field_type(return)
-      <> ")"
+      "types.IsFunction3(" <> type_args([typ1, typ2, typ3, return]) <> ")"
     FunctionType([typ1, typ2, typ3, typ4], return) ->
-      "types.IsFunction4("
-      <> type_args([typ1, typ2, typ3, typ4])
-      <> ", "
-      <> field_type(return)
-      <> ")"
+      "types.IsFunction4(" <> type_args([typ1, typ2, typ3, typ4, return]) <> ")"
     FunctionType([typ1, typ2, typ3, typ4, typ5], return) ->
       "types.IsFunction5("
-      <> type_args([typ1, typ2, typ3, typ4, typ5])
-      <> ", "
-      <> field_type(return)
+      <> type_args([typ1, typ2, typ3, typ4, typ5, return])
       <> ")"
     FunctionType([typ1, typ2, typ3, typ4, typ5, typ6], return) ->
       "types.IsFunction6("
-      <> type_args([typ1, typ2, typ3, typ4, typ5, typ6])
-      <> ", "
-      <> field_type(return)
+      <> type_args([typ1, typ2, typ3, typ4, typ5, typ6, return])
       <> ")"
     _ -> {
       io.debug(typ)
