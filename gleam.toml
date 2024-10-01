@@ -13,7 +13,7 @@ allow_run = true
 
 [dependencies]
 fswalk = ">= 3.0.1"
-glance = ">= 0.11.0"
+glance = ">= 1.0.0"
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
 gleamyshell = ">= 2.0.0"
 glexer = ">= 1.0.1 and < 2.0.0"
