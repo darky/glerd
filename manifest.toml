@@ -2,24 +2,28 @@
 # You typically do not need to edit this file
 
 packages = [
-  { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
-  { name = "fswalk", version = "3.0.1", build_tools = ["gleam"], requirements = ["gleam_community_path", "gleam_stdlib", "simplifile"], otp_app = "fswalk", source = "hex", outer_checksum = "344B6600F50E638D0F4A51110235566F692EAED9CEDF9A65100DE0CFE88A9785" },
-  { name = "glance", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "glexer"], otp_app = "glance", source = "hex", outer_checksum = "1510D4A03C28880E62974389E5BF1A5A185036BA07392F1D769620706A9E042F" },
+  { name = "filepath", version = "1.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "67A6D15FB39EEB69DD31F8C145BB5A421790581BD6AA14B33D64D5A55DBD6587" },
+  { name = "fswalk", version = "3.0.3", build_tools = ["gleam"], requirements = ["gleam_community_path", "gleam_stdlib", "gleam_yielder", "simplifile"], otp_app = "fswalk", source = "hex", outer_checksum = "2F0859F297348EAEA080925931B27CD84C0D6D18809D38AE18BE10A3D6512657" },
+  { name = "glance", version = "2.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "glexer"], otp_app = "glance", source = "hex", outer_checksum = "784CE3B5658CF589B2E811031992FDADDFA9C7FD2A51F1140EE019F121D6D0EB" },
   { name = "gleam_community_path", version = "0.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_community_path", source = "hex", outer_checksum = "916C2829E2ED81036BBA180CFD5E8633D05E25C304FDF6E3BC8A048459B89725" },
-  { name = "gleam_stdlib", version = "0.39.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "2D7DE885A6EA7F1D5015D1698920C9BAF7241102836CE0C3837A4F160128A9C4" },
-  { name = "gleamyshell", version = "2.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleamyshell", source = "hex", outer_checksum = "A5D8ABC9490BA4D6AF187D93DF55230A1D140E7B36704E1201FEB69607719661" },
+  { name = "gleam_deque", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_deque", source = "hex", outer_checksum = "64D77068931338CF0D0CB5D37522C3E3CCA7CB7D6C5BACB41648B519CC0133C7" },
+  { name = "gleam_stdlib", version = "0.51.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "14AFA8D3DDD7045203D422715DBB822D1725992A31DF35A08D97389014B74B68" },
+  { name = "gleam_yielder", version = "1.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleam_yielder", source = "hex", outer_checksum = "8E4E4ECFA7982859F430C57F549200C7749823C106759F4A19A78AEA6687717A" },
+  { name = "gleamyshell", version = "2.0.2", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleamyshell", source = "hex", outer_checksum = "9FCDB2E7C2C64CF8973049323586AEE164B72D06EBCE1AFBEA88D7B5E6B88AAE" },
   { name = "gleeunit", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "F7A7228925D3EE7D0813C922E062BFD6D7E9310F0BEE585D3A42F3307E3CFD13" },
-  { name = "glexer", version = "1.0.1", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "glexer", source = "hex", outer_checksum = "BD477AD657C2B637FEF75F2405FAEFFA533F277A74EF1A5E17B55B1178C228FB" },
+  { name = "glexer", version = "2.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "glexer", source = "hex", outer_checksum = "25E87F25706749E40C3CDC72D2E52AEA12260B23D14FD9E09A1B524EF393485E" },
   { name = "gluple", version = "2.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gluple", source = "hex", outer_checksum = "7D61583F17EFBF26043C14A417FF56D1BC709A45F75BB499E35CA28C9C3A8EB9" },
-  { name = "simplifile", version = "1.7.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "1D5DFA3A2F9319EC85825F6ED88B8E449F381B0D55A62F5E61424E748E7DDEB0" },
+  { name = "simplifile", version = "2.2.0", build_tools = ["gleam"], requirements = ["filepath", "gleam_stdlib"], otp_app = "simplifile", source = "hex", outer_checksum = "0DFABEF7DC7A9E2FF4BB27B108034E60C81BEBFCB7AB816B9E7E18ED4503ACD8" },
 ]
 
 [requirements]
 fswalk = { version = ">= 3.0.1" }
-glance = { version = ">= 1.0.0" }
-gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
+glance = { version = ">= 2.0.0" }
+gleam_deque = { version = ">= 1.0.0" }
+gleam_stdlib = { version = ">= 0.34.0" }
+gleam_yielder = { version = ">= 1.1.0" }
 gleamyshell = { version = ">= 2.0.0" }
-gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
-glexer = { version = ">= 1.0.1 and < 2.0.0" }
+gleeunit = { version = ">= 1.0.0" }
+glexer = { version = ">= 2.0.0" }
 gluple = { version = ">= 2.2.0" }
 simplifile = { version = ">= 1.7.0" }

@@ -1,17 +1,16 @@
 import fswalk.{Entry, Stat}
 import glance.{
-  CustomType, Definition, Field, FunctionType, Module, NamedType, TupleType,
-  Variant,
+  CustomType, Definition, FunctionType, LabelledVariantField, Module, NamedType,
+  TupleType, UnlabelledVariantField, Variant,
 }
+import gleam/deque
 import gleam/dict.{type Dict}
 import gleam/io
-import gleam/iterator
 import gleam/list
-import gleam/option.{Some}
 import gleam/pair
-import gleam/queue
 import gleam/result
 import gleam/string
+import gleam/yielder
 import gleamyshell
 import glexer.{type Position, Position}
 import glexer/token.{CommentDoc, UpperName}
@@ -52,7 +51,7 @@ pub fn generate(root) {
     fswalk.builder()
     |> fswalk.with_path(root)
     |> fswalk.walk()
-    |> iterator.filter(fn(entry_result) {
+    |> yielder.filter(fn(entry_result) {
       case entry_result {
         Ok(Entry(path, Stat(is_dir))) ->
           is_dir == False
@@ -61,38 +60,37 @@ pub fn generate(root) {
         _ -> False
       }
     })
-    |> iterator.map(fn(entry_result) {
+    |> yielder.map(fn(entry_result) {
       let assert Ok(Entry(path, _)) = entry_result
       FilePath(path)
     })
-    |> iterator.map(fn(file_path) {
+    |> yielder.map(fn(file_path) {
       let assert Ok(content) = file_path.val |> simplifile.read
       #(file_path, content |> FileContent)
     })
-    |> iterator.map(fn(ctx) {
+    |> yielder.map(fn(ctx) {
       use file_path, _ <- ga.with_append2(ctx)
       file_path.val
       |> string.replace(root <> "/", "")
       |> string.replace(".gleam", "")
       |> ModuleName
     })
-    |> iterator.map(fn(ctx) { ctx |> gr.remove_first3 })
-    |> iterator.map(fn(ctx) {
+    |> yielder.map(fn(ctx) { ctx |> gr.remove_first3 })
+    |> yielder.map(fn(ctx) {
       use file_content, _ <- ga.with_append2(ctx)
       file_content.val
       |> glexer.new
       |> glexer.lex
-      |> list.fold(#(queue.new(), dict.new()), fn(acc, lexem) {
+      |> list.fold(#(deque.new(), dict.new()), fn(acc, lexem) {
         let #(meta_batch, meta_final) = acc
-        let meta_batch_is_empty = queue.is_empty(meta_batch)
+        let meta_batch_is_empty = deque.is_empty(meta_batch)
         case lexem {
-          #(CommentDoc(meta), Position(_)) -> #(
-            meta_batch |> queue.push_back(meta |> string.trim),
-            meta_final,
-          )
+          #(CommentDoc(meta), Position(_)) -> {
+            #(meta_batch |> deque.push_back(meta |> string.trim), meta_final)
+          }
           #(UpperName(rec_name), Position(_)) if !meta_batch_is_empty -> {
             #(
-              queue.new(),
+              deque.new(),
               dict.insert(
                 meta_final,
                 rec_name |> RecordName,
@@ -100,13 +98,13 @@ pub fn generate(root) {
               ),
             )
           }
-          _ -> #(queue.new(), meta_final)
+          _ -> #(meta_batch, meta_final)
         }
       })
       |> pair.second
       |> MetaDict
     })
-    |> iterator.map(fn(ctx) {
+    |> yielder.map(fn(ctx) {
       use file_content, _, _ <- ga.with_append3(ctx)
       let assert Ok(module) = file_content.val |> glance.module
       let Module(_, custom_types_definitions, ..) = module
@@ -115,15 +113,17 @@ pub fn generate(root) {
       let CustomType(_, _, _, _, variants) = custom_type
       variants
     })
-    |> iterator.map(fn(ctx) { ctx |> gr.remove_first4 })
-    |> iterator.map(fn(ctx) {
+    |> yielder.map(fn(ctx) { ctx |> gr.remove_first4 })
+    |> yielder.map(fn(ctx) {
       let #(module_name, meta_dict, variants) = ctx
       use Variant(record_name, fields) <- list.map(variants)
       let fields =
         fields
         |> list.map(fn(field) {
-          let Field(field_name, typ) = field
-          let assert Some(field_name) = option.or(field_name, Some("__none__"))
+          let #(field_name, typ) = case field {
+            LabelledVariantField(typ, field_name) -> #(field_name, typ)
+            UnlabelledVariantField(typ) -> #("__none__", typ)
+          }
           "#(\"" <> field_name <> "\", " <> field_type(typ) <> ")"
         })
         |> string.join(",")
@@ -141,8 +141,8 @@ pub fn generate(root) {
       <> meta
       <> "\")"
     })
-    |> iterator.flat_map(fn(record_code) { record_code |> iterator.from_list })
-    |> iterator.fold("", fn(acc, record_code) { acc <> record_code <> ",\n" })
+    |> yielder.flat_map(fn(record_code) { record_code |> yielder.from_list })
+    |> yielder.fold("", fn(acc, record_code) { acc <> record_code <> ",\n" })
 
   let gen_file_path = "./" <> root <> "/glerd_gen.gleam"
 
@@ -223,7 +223,7 @@ fn type_args(types) {
 }
 
 fn stringify_queue(que, str) {
-  case que |> queue.pop_front {
+  case que |> deque.pop_front {
     Ok(#(el, que)) -> stringify_queue(que, str <> " " <> el)
     Error(Nil) -> str
   }

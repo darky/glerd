@@ -13,12 +13,14 @@ allow_run = true
 
 [dependencies]
 fswalk = ">= 3.0.1"
-glance = ">= 1.0.0"
-gleam_stdlib = ">= 0.34.0 and < 2.0.0"
+glance = ">= 2.0.0"
+gleam_deque = ">= 1.0.0"
+gleam_stdlib = ">= 0.34.0"
+gleam_yielder = ">= 1.1.0"
 gleamyshell = ">= 2.0.0"
-glexer = ">= 1.0.1 and < 2.0.0"
+glexer = ">= 2.0.0"
 gluple = ">= 2.2.0"
 simplifile = ">= 1.7.0"
 
 [dev-dependencies]
-gleeunit = ">= 1.0.0 and < 2.0.0"
+gleeunit = ">= 1.0.0"
