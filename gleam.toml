@@ -1,5 +1,5 @@
 name = "glerd"
-version = "5.0.1"
+version = "5.0.2"
 description = "Generate metadata of Gleam Records for runtime reflection"
 licences = ["MIT"]
 repository = { type = "github", user = "darky", repo = "glerd" }
