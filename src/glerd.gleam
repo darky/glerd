@@ -5,14 +5,13 @@ import glance.{
 }
 import gleam/deque
 import gleam/dict.{type Dict}
-import gleam/io
 import gleam/list
 import gleam/pair
 import gleam/result
 import gleam/string
 import gleam/yielder
 import gleamyshell
-import glexer.{type Position, Position}
+import glexer.{Position}
 import glexer/token.{CommentDoc, UpperName}
 import gluple/addition as ga
 import gluple/removal as gr
@@ -110,13 +109,13 @@ pub fn generate(root) {
       let Module(_, custom_types_definitions, ..) = module
       use custom_type_definition <- list.flat_map(custom_types_definitions)
       let Definition(_, custom_type) = custom_type_definition
-      let CustomType(_, _, _, _, variants) = custom_type
+      let CustomType(_, _, _, _, _, variants) = custom_type
       variants
     })
     |> yielder.map(fn(ctx) { ctx |> gr.remove_first4 })
     |> yielder.map(fn(ctx) {
       let #(module_name, meta_dict, variants) = ctx
-      use Variant(record_name, fields) <- list.map(variants)
+      use Variant(record_name, fields, _attrs) <- list.map(variants)
       let fields =
         fields
         |> list.map(fn(field) {
@@ -164,52 +163,52 @@ pub fn generate(root) {
 
 fn field_type(typ) {
   case typ {
-    NamedType(type_name, ..) if type_name == "String" -> "types.IsString"
-    NamedType(type_name, ..) if type_name == "Int" -> "types.IsInt"
-    NamedType(type_name, ..) if type_name == "Float" -> "types.IsFloat"
-    NamedType(type_name, ..) if type_name == "Bool" -> "types.IsBool"
-    NamedType(type_name, ..) if type_name == "Nil" -> "types.IsNil"
-    NamedType(type_name, _, [typ]) if type_name == "List" ->
+    NamedType(_, type_name, ..) if type_name == "String" -> "types.IsString"
+    NamedType(_, type_name, ..) if type_name == "Int" -> "types.IsInt"
+    NamedType(_, type_name, ..) if type_name == "Float" -> "types.IsFloat"
+    NamedType(_, type_name, ..) if type_name == "Bool" -> "types.IsBool"
+    NamedType(_, type_name, ..) if type_name == "Nil" -> "types.IsNil"
+    NamedType(_, type_name, _, [typ]) if type_name == "List" ->
       "types.IsList(" <> field_type(typ) <> ")"
-    NamedType(type_name, _, [key_type, val_type]) if type_name == "Dict" ->
+    NamedType(_, type_name, _, [key_type, val_type]) if type_name == "Dict" ->
       "types.IsDict(" <> type_args([key_type, val_type]) <> ")"
-    NamedType(type_name, _, [typ]) if type_name == "Option" ->
+    NamedType(_, type_name, _, [typ]) if type_name == "Option" ->
       "types.IsOption(" <> field_type(typ) <> ")"
-    NamedType(type_name, _, [typ1, typ2]) if type_name == "Result" ->
+    NamedType(_, type_name, _, [typ1, typ2]) if type_name == "Result" ->
       "types.IsResult(" <> type_args([typ1, typ2]) <> ")"
-    TupleType([typ1, typ2]) ->
+    TupleType(_, [typ1, typ2]) ->
       "types.IsTuple2(" <> type_args([typ1, typ2]) <> ")"
-    TupleType([typ1, typ2, typ3]) ->
+    TupleType(_, [typ1, typ2, typ3]) ->
       "types.IsTuple3(" <> type_args([typ1, typ2, typ3]) <> ")"
-    TupleType([typ1, typ2, typ3, typ4]) ->
+    TupleType(_, [typ1, typ2, typ3, typ4]) ->
       "types.IsTuple4(" <> type_args([typ1, typ2, typ3, typ4]) <> ")"
-    TupleType([typ1, typ2, typ3, typ4, typ5]) ->
+    TupleType(_, [typ1, typ2, typ3, typ4, typ5]) ->
       "types.IsTuple5(" <> type_args([typ1, typ2, typ3, typ4, typ5]) <> ")"
-    TupleType([typ1, typ2, typ3, typ4, typ5, typ6]) ->
+    TupleType(_, [typ1, typ2, typ3, typ4, typ5, typ6]) ->
       "types.IsTuple6("
       <> type_args([typ1, typ2, typ3, typ4, typ5, typ6])
       <> ")"
-    NamedType(record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
-    FunctionType([], return) ->
+    NamedType(_, record_name, ..) -> "types.IsRecord(\"" <> record_name <> "\")"
+    FunctionType(_, [], return) ->
       "types.IsFunction0(" <> type_args([return]) <> ")"
-    FunctionType([typ1], return) ->
+    FunctionType(_, [typ1], return) ->
       "types.IsFunction1(" <> type_args([typ1, return]) <> ")"
-    FunctionType([typ1, typ2], return) ->
+    FunctionType(_, [typ1, typ2], return) ->
       "types.IsFunction2(" <> type_args([typ1, typ2, return]) <> ")"
-    FunctionType([typ1, typ2, typ3], return) ->
+    FunctionType(_, [typ1, typ2, typ3], return) ->
       "types.IsFunction3(" <> type_args([typ1, typ2, typ3, return]) <> ")"
-    FunctionType([typ1, typ2, typ3, typ4], return) ->
+    FunctionType(_, [typ1, typ2, typ3, typ4], return) ->
       "types.IsFunction4(" <> type_args([typ1, typ2, typ3, typ4, return]) <> ")"
-    FunctionType([typ1, typ2, typ3, typ4, typ5], return) ->
+    FunctionType(_, [typ1, typ2, typ3, typ4, typ5], return) ->
       "types.IsFunction5("
       <> type_args([typ1, typ2, typ3, typ4, typ5, return])
       <> ")"
-    FunctionType([typ1, typ2, typ3, typ4, typ5, typ6], return) ->
+    FunctionType(_, [typ1, typ2, typ3, typ4, typ5, typ6], return) ->
       "types.IsFunction6("
       <> type_args([typ1, typ2, typ3, typ4, typ5, typ6, return])
       <> ")"
     _ -> {
-      io.debug(typ)
+      echo typ
       "types.Unknown"
     }
   }
