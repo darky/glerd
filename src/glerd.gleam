@@ -208,7 +208,6 @@ fn field_type(typ) {
       <> type_args([typ1, typ2, typ3, typ4, typ5, typ6, return])
       <> ")"
     _ -> {
-      echo typ
       "types.Unknown"
     }
   }
